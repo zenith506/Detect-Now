@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Detect Now</title>
+
+    <link
+        rel="stylesheet"
+        href="../static/style.css"
+    >
+
+</head>
+
+<body>
+
+    <main class="container">
+
+        <header>
+
+            <h1>Detect Now</h1>
+
+            <p>
+                Select the type of media you want to check.
+            </p>
+
+        </header>
+
+
+        <!-- First page: media selection -->
+        <section
+            id="media-selection-page"
+            class="upload-card"
+        >
+
+            <h2>Select Media Type</h2>
+
+            <div class="media-selection">
+
+                <button
+                    type="button"
+                    id="select-image-button"
+                    class="media-button"
+                >
+
+                    <span class="media-icon">▧</span>
+
+                    <strong>Image</strong>
+
+                    <small>
+                        Upload JPG, JPEG or PNG
+                    </small>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    id="select-video-button"
+                    class="media-button"
+                >
+
+                    <span class="media-icon">▶</span>
+
+                    <strong>Video</strong>
+
+                    <small>
+                        Upload MP4, WebM or MOV
+                    </small>
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- Second page: file upload -->
+        <section
+            id="upload-page"
+            class="upload-card"
+            hidden
+        >
+
+            <div class="upload-heading">
+
+                <button
+                    type="button"
+                    id="back-button"
+                    class="back-button"
+                >
+                    ← Back
+                </button>
+
+                <div>
+
+                    <h2 id="upload-heading">
+                        Upload Image
+                    </h2>
+
+                    <p id="upload-description">
+                        Select an image from your device.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- File input -->
+            <label
+                class="upload-box"
+                for="media-input"
+            >
+
+                <span id="upload-text">
+                    Choose a file
+                </span>
+
+                <small id="file-information">
+                    Select a supported file
+                </small>
+
+                <input
+                    type="file"
+                    id="media-input"
+                >
+
+            </label>
+
+
+            <!-- Image preview -->
+            <div
+                id="image-preview-section"
+                class="preview-section"
+                hidden
+            >
+
+                <img
+                    id="image-preview"
+                    alt="Selected image preview"
+                >
+
+                <p id="image-file-name"></p>
+
+            </div>
+
+
+            <!-- Video preview -->
+            <div
+                id="video-preview-section"
+                class="preview-section"
+                hidden
+            >
+
+                <video
+                    id="video-preview"
+                    controls
+                ></video>
+
+                <p id="video-file-name"></p>
+
+            </div>
+
+
+            <!-- Maintenance message -->
+            <div
+                id="maintenance-message"
+                class="maintenance-message"
+                hidden
+            >
+
+                <h2>Under Maintenance</h2>
+
+                <p>
+                    Your file was uploaded successfully.
+                    The deepfake detection service is currently
+                    under maintenance. Please try again later.
+                </p>
+
+            </div>
+
+
+            <!-- Upload again -->
+            <button
+                type="button"
+                id="upload-again-button"
+                class="upload-again-button"
+                hidden
+            >
+                Upload Another File
+            </button>
+
+        </section>
+
+
+        <!-- Upload history -->
+        <section class="history-card">
+
+            <div class="history-heading">
+
+                <div>
+
+                    <h2>Upload History</h2>
+
+                    <p>
+                        Files selected on this browser
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="clear-history-button"
+                    class="clear-history-button"
+                >
+                    Clear History
+                </button>
+
+            </div>
+
+
+            <div id="history-list">
+
+                <p
+                    id="empty-history-message"
+                    class="empty-history-message"
+                >
+                    No upload history is available.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="../static/app.js"></script>
+
+</body>
+
+</html>
