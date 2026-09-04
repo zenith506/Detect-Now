@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -16,55 +15,45 @@
         rel="stylesheet"
         href="static/style.css"
     >
-
 </head>
 
 <body>
 
-   
     <nav class="navbar">
 
         <div class="nav-container">
 
-            <a href="#" class="logo">
-
+            <a href="#home" class="logo">
                 <span class="logo-icon">D</span>
 
                 <span>
                     Detect <strong>Now</strong>
                 </span>
-
             </a>
 
 
             <div class="nav-links">
-
                 <a href="#home">Home</a>
-
                 <a href="#detector">Detector</a>
-
                 <a href="#features">Features</a>
-
                 <a href="#how-it-works">How It Works</a>
-
                 <a href="#history">History</a>
-
+                <a href="about.html">About Us</a>
             </div>
 
 
-            <button
-                type="button"
-                class="nav-button maintenance-trigger"
+            <a
+                href="#detector"
+                class="nav-button"
             >
-                System Status
-            </button>
+                Check an Image
+            </a>
 
         </div>
 
     </nav>
 
 
-   
     <main id="home">
 
         <section class="hero-section">
@@ -78,15 +67,14 @@
                     </span>
 
                     <h1>
-                        Identify manipulated
-                        media with
+                        Identify manipulated media with
                         <span>Detect Now.</span>
                     </h1>
 
                     <p>
-                        Upload an image or video and use our
-                        prototype to check whether the media may
-                        contain signs of deepfake manipulation.
+                        Upload an image and use our pretrained
+                        deep-learning model to check whether it
+                        may be real or artificially generated.
                     </p>
 
 
@@ -99,30 +87,25 @@
                             Start Detection
                         </a>
 
-                        <button
-                            type="button"
-                            class="secondary-button maintenance-trigger"
+                        <a
+                            href="#how-it-works"
+                            class="secondary-button"
                         >
-                            View Demonstration
-                        </button>
+                            How It Works
+                        </a>
 
                     </div>
 
 
                     <div class="hero-points">
-
-                        <span>✓ Simple uploads</span>
-
-                        <span>✓ Private analysis</span>
-
-                        <span>✓ Clear results</span>
-
+                        <span>✓ Simple upload</span>
+                        <span>✓ Human-face validation</span>
+                        <span>✓ Downloadable report</span>
                     </div>
 
                 </div>
 
 
-              
                 <div
                     id="detector"
                     class="detector-card"
@@ -131,17 +114,16 @@
                     <div class="card-heading">
 
                         <div>
-
                             <span class="section-label">
                                 MEDIA ANALYSIS
                             </span>
 
                             <h2>Check your media</h2>
-
                         </div>
 
+
                         <span class="status-badge">
-                            Prototype
+                            Model Online
                         </span>
 
                     </div>
@@ -152,7 +134,6 @@
                     </p>
 
 
-                   
                     <div
                         id="media-selection"
                         class="media-selection"
@@ -168,9 +149,12 @@
                                 ▧
                             </span>
 
+
                             <span class="media-details">
 
-                                <strong>Image Detection</strong>
+                                <strong>
+                                    Image Detection
+                                </strong>
 
                                 <small>
                                     JPG, JPEG and PNG files
@@ -178,7 +162,10 @@
 
                             </span>
 
-                            <span class="media-arrow">→</span>
+
+                            <span class="media-arrow">
+                                →
+                            </span>
 
                         </button>
 
@@ -193,24 +180,29 @@
                                 ▶
                             </span>
 
+
                             <span class="media-details">
 
-                                <strong>Video Detection</strong>
+                                <strong>
+                                    Video Detection
+                                </strong>
 
                                 <small>
-                                    MP4, WebM and MOV files
+                                    Planned for the next stage
                                 </small>
 
                             </span>
 
-                            <span class="media-arrow">→</span>
+
+                            <span class="media-arrow">
+                                →
+                            </span>
 
                         </button>
 
                     </div>
 
 
-                   
                     <div
                         id="upload-area"
                         class="upload-area"
@@ -235,6 +227,7 @@
                                 ▧
                             </span>
 
+
                             <div>
 
                                 <h3 id="upload-heading">
@@ -255,7 +248,9 @@
                             class="upload-box"
                         >
 
-                            <span class="upload-cloud">↑</span>
+                            <span class="upload-cloud">
+                                ↑
+                            </span>
 
                             <strong id="upload-text">
                                 Choose an image
@@ -277,7 +272,6 @@
                         </label>
 
 
- 
                         <div
                             id="image-preview-section"
                             class="preview-section"
@@ -289,18 +283,20 @@
                                 alt="Selected image"
                             >
 
+
                             <div class="preview-information">
 
                                 <strong id="image-file-name"></strong>
 
-                                <span>Image ready for analysis</span>
+                                <span>
+                                    Image ready for analysis
+                                </span>
 
                             </div>
 
                         </div>
 
 
-                      
                         <div
                             id="video-preview-section"
                             class="preview-section"
@@ -312,39 +308,187 @@
                                 controls
                             ></video>
 
+
                             <div class="preview-information">
 
                                 <strong id="video-file-name"></strong>
 
-                                <span>Video ready for analysis</span>
+                                <span>
+                                    Video selected
+                                </span>
 
                             </div>
 
                         </div>
 
 
-                        
                         <div
-                            id="maintenance-message"
-                            class="maintenance-message"
+                            id="video-notice"
+                            class="analysis-error"
                             hidden
                         >
 
-                            <span class="maintenance-icon">!</span>
+                            <span>i</span>
+
 
                             <div>
 
-                                <h3>Detection Under Maintenance</h3>
+                                <h3>
+                                    Video Detection Coming Soon
+                                </h3>
 
                                 <p>
-                                    Your file was uploaded successfully,
-                                    but the detection model is currently
-                                    being developed. Please try again later.
+                                    Video detection will be added
+                                    during the next development stage.
+                                    Image detection is currently available.
                                 </p>
 
                             </div>
 
                         </div>
+
+
+                        <div
+                            id="analysis-loading"
+                            class="analysis-loading"
+                            hidden
+                        >
+
+                            <span class="loading-spinner"></span>
+
+
+                            <div>
+
+                                <h3>
+                                    Analysing Image
+                                </h3>
+
+                                <p>
+                                    The pretrained model is checking
+                                    the selected image. Please wait.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            id="analysis-error"
+                            class="analysis-error"
+                            hidden
+                        >
+
+                            <span>!</span>
+
+
+                            <div>
+
+                                <h3>
+                                    Analysis Failed
+                                </h3>
+
+                                <p id="analysis-error-text">
+                                    The image could not be analysed.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            id="detection-result"
+                            class="detection-result"
+                            hidden
+                        >
+
+                            <div class="result-heading">
+
+                                <div>
+
+                                    <span class="result-label">
+                                        DETECTION RESULT
+                                    </span>
+
+                                    <h3 id="prediction-text">
+                                        Likely Real
+                                    </h3>
+
+                                </div>
+
+
+                                <strong id="confidence-text">
+                                    0% confidence
+                                </strong>
+
+                            </div>
+
+
+                            <div class="confidence-bar">
+
+                                <span id="confidence-bar-fill"></span>
+
+                            </div>
+
+
+                            <div class="probability-grid">
+
+                                <div>
+
+                                    <span>
+                                        Real probability
+                                    </span>
+
+                                    <strong id="real-probability">
+                                        0%
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Deepfake probability
+                                    </span>
+
+                                    <strong id="fake-probability">
+                                        0%
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <p class="result-warning">
+                                This result is produced by a
+                                pretrained model and should not
+                                be treated as forensic proof.
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            id="analyse-button"
+                            class="full-button"
+                            hidden
+                        >
+                            Analyse Image
+                        </button>
+
+
+                        <button
+                            type="button"
+                            id="download-report-button"
+                            class="report-button"
+                            hidden
+                        >
+                            View and Download Report
+                        </button>
 
 
                         <button
@@ -363,7 +507,7 @@
 
                         <span>●</span>
 
-                        Files are only used for this prototype session.
+                        A clear human face is required for analysis.
 
                     </div>
 
@@ -374,41 +518,28 @@
         </section>
 
 
-       
         <section class="statistics-section">
 
             <div class="statistics-container">
 
                 <div class="statistic">
-
                     <strong>2</strong>
-
-                    <span>Supported media types</span>
-
+                    <span>Detection categories</span>
                 </div>
 
                 <div class="statistic">
-
-                    <strong>6</strong>
-
-                    <span>Supported file formats</span>
-
+                    <strong>3</strong>
+                    <span>Supported image formats</span>
                 </div>
 
                 <div class="statistic">
-
-                    <strong>50 MB</strong>
-
-                    <span>Maximum video size</span>
-
+                    <strong>8 MB</strong>
+                    <span>Maximum image size</span>
                 </div>
 
                 <div class="statistic">
-
-                    <strong>24/7</strong>
-
-                    <span>Prototype availability</span>
-
+                    <strong>PDF</strong>
+                    <span>Downloadable report</span>
                 </div>
 
             </div>
@@ -416,7 +547,6 @@
         </section>
 
 
-        
         <section
             id="features"
             class="content-section"
@@ -428,12 +558,14 @@
                     PROTOTYPE FEATURES
                 </span>
 
-                <h2>Tools for checking digital media</h2>
+                <h2>
+                    Simple tools for checking digital media
+                </h2>
 
                 <p>
-                    Detect Now is designed to provide a simple
-                    place for uploading and reviewing suspicious
-                    images and videos.
+                    Detect Now provides an easy interface
+                    for uploading facial images and understanding
+                    model predictions.
                 </p>
 
             </div>
@@ -441,137 +573,130 @@
 
             <div class="features-grid">
 
-                <button
-                    type="button"
-                    class="feature-card maintenance-trigger"
-                >
+                <article class="feature-card">
 
-                    <span class="feature-icon">◎</span>
+                    <span class="feature-icon">
+                        ◎
+                    </span>
 
                     <h3>Image Analysis</h3>
 
                     <p>
-                        Upload images and check them for possible
-                        signs of digital manipulation.
+                        Upload an image and check it using
+                        a pretrained image-classification model.
                     </p>
 
                     <span class="feature-link">
-                        Open feature →
+                        Available now
                     </span>
 
-                </button>
+                </article>
 
 
-                <button
-                    type="button"
-                    class="feature-card maintenance-trigger"
-                >
+                <article class="feature-card">
 
-                    <span class="feature-icon">▶</span>
+                    <span class="feature-icon">
+                        ◉
+                    </span>
 
-                    <h3>Video Analysis</h3>
+                    <h3>Face Detection</h3>
 
                     <p>
-                        Review video files by analysing selected
-                        frames for suspicious patterns.
+                        Confirm that the uploaded image contains
+                        a clear human face before analysis.
                     </p>
 
                     <span class="feature-link">
-                        Open feature →
+                        Available now
                     </span>
 
-                </button>
+                </article>
 
 
-                <button
-                    type="button"
-                    class="feature-card maintenance-trigger"
-                >
+                <article class="feature-card">
 
-                    <span class="feature-icon">▥</span>
+                    <span class="feature-icon">
+                        %
+                    </span>
 
-                    <h3>Detailed Report</h3>
+                    <h3>Confidence Score</h3>
 
                     <p>
-                        View prediction confidence, analysed
-                        signals and a simple result summary.
+                        View the model confidence and compare
+                        real and deepfake probability values.
                     </p>
 
                     <span class="feature-link">
-                        Open feature →
+                        Included in results
                     </span>
 
-                </button>
+                </article>
 
 
-                <button
-                    type="button"
-                    class="feature-card maintenance-trigger"
-                >
+                <article class="feature-card">
 
-                    <span class="feature-icon">◷</span>
+                    <span class="feature-icon">
+                        ▤
+                    </span>
 
-                    <h3>Analysis History</h3>
+                    <h3>Detection Report</h3>
 
                     <p>
-                        Review the names, media types and upload
-                        dates of previously selected files.
+                        View file details, prediction values,
+                        model information and image preview.
                     </p>
 
                     <span class="feature-link">
-                        Open feature →
+                        Available after analysis
                     </span>
 
-                </button>
+                </article>
 
 
-                <button
-                    type="button"
-                    class="feature-card maintenance-trigger"
-                >
+                <article class="feature-card">
 
-                    <span class="feature-icon">⇩</span>
+                    <span class="feature-icon">
+                        ◷
+                    </span>
 
-                    <h3>Download Results</h3>
+                    <h3>Upload History</h3>
 
                     <p>
-                        Save a copy of the detection result for
-                        later review and project documentation.
+                        Review the file name, size and date
+                        of recently selected images.
                     </p>
 
                     <span class="feature-link">
-                        Open feature →
+                        Available now
                     </span>
 
-                </button>
+                </article>
 
 
-                <button
-                    type="button"
-                    class="feature-card maintenance-trigger"
-                >
+                <article class="feature-card">
 
-                    <span class="feature-icon">?</span>
+                    <span class="feature-icon">
+                        ▶
+                    </span>
 
-                    <h3>Help Centre</h3>
+                    <h3>Video Detection</h3>
 
                     <p>
-                        Learn about supported formats, limitations
-                        and how to understand detection results.
+                        Video frame extraction and detection
+                        will be added in the next project stage.
                     </p>
 
                     <span class="feature-link">
-                        Open feature →
+                        Next development stage
                     </span>
 
-                </button>
+                </article>
 
             </div>
 
         </section>
 
 
-    
         <section
             id="how-it-works"
             class="how-section"
@@ -586,7 +711,8 @@
                 <h2>How Detect Now works</h2>
 
                 <p>
-                    The proposed system follows four simple stages.
+                    The current image-detection process
+                    follows four simple stages.
                 </p>
 
             </div>
@@ -594,65 +720,72 @@
 
             <div class="steps-grid">
 
-                <div class="step-card">
+                <article class="step-card">
 
-                    <span class="step-number">01</span>
+                    <span class="step-number">
+                        01
+                    </span>
 
-                    <h3>Select media</h3>
+                    <h3>Select image</h3>
 
                     <p>
-                        Choose whether you want to analyse
-                        an image or video.
+                        Choose image detection from
+                        the media selection area.
                     </p>
 
-                </div>
+                </article>
 
 
-                <div class="step-card">
+                <article class="step-card">
 
-                    <span class="step-number">02</span>
+                    <span class="step-number">
+                        02
+                    </span>
 
                     <h3>Upload file</h3>
 
                     <p>
-                        Select a supported file from your
-                        computer or device.
+                        Select a supported JPG, JPEG
+                        or PNG facial image.
                     </p>
 
-                </div>
+                </article>
 
 
-                <div class="step-card">
+                <article class="step-card">
 
-                    <span class="step-number">03</span>
+                    <span class="step-number">
+                        03
+                    </span>
 
-                    <h3>Analyse media</h3>
+                    <h3>Analyse face</h3>
 
                     <p>
-                        The detection model checks the media
-                        for manipulation patterns.
+                        The face is detected and processed
+                        using the pretrained model.
                     </p>
 
-                </div>
+                </article>
 
 
-                <div class="step-card">
+                <article class="step-card">
 
-                    <span class="step-number">04</span>
+                    <span class="step-number">
+                        04
+                    </span>
 
-                    <h3>View result</h3>
+                    <h3>Download report</h3>
 
                     <p>
-                        Receive a simple real, uncertain or
-                        possible-deepfake result.
+                        View the prediction and save
+                        the detailed result as a PDF.
                     </p>
 
-                </div>
+                </article>
 
             </div>
 
         </section>
-
 
 
         <section
@@ -700,8 +833,8 @@
                         <h3>No upload history</h3>
 
                         <p>
-                            Your recently selected files will
-                            appear here.
+                            Your recently selected files
+                            will appear here.
                         </p>
 
                     </div>
@@ -713,47 +846,50 @@
         </section>
 
 
-        <!-- Privacy section -->
         <section class="privacy-section">
 
             <div>
 
                 <span class="section-label">
-                    PRIVACY AND LIMITATIONS
+                    RESPONSIBLE USE
                 </span>
 
-                <h2>Designed as an academic prototype</h2>
+                <h2>
+                    Designed as an academic prototype
+                </h2>
 
                 <p>
-                    Detect Now is being developed for a university
-                    project. Its future predictions may provide
-                    additional guidance, but they should not be
-                    treated as forensic proof.
+                    Detect Now uses a pretrained model to
+                    provide an experimental prediction.
+                    Results may be affected by image quality,
+                    compression, lighting and unfamiliar
+                    manipulation techniques.
                 </p>
 
             </div>
 
 
-            <button
-                type="button"
-                class="secondary-button maintenance-trigger"
+            <a
+                href="about.html"
+                class="secondary-button"
             >
-                Read Project Information
-            </button>
+                About Our Project
+            </a>
 
         </section>
 
     </main>
 
 
-    
     <footer>
 
         <div class="footer-container">
 
-            <a href="#" class="logo footer-logo">
+            <a href="#home" class="logo footer-logo">
 
-                <span class="logo-icon">D</span>
+                <span class="logo-icon">
+                    D
+                </span>
 
                 <span>
                     Detect <strong>Now</strong>
@@ -774,52 +910,6 @@
         </div>
 
     </footer>
-
-
-    
-    <div
-        id="maintenance-modal"
-        class="modal"
-        hidden
-    >
-
-        <div class="modal-background"></div>
-
-
-        <div class="modal-content">
-
-            <button
-                type="button"
-                id="close-modal-button"
-                class="close-modal-button"
-                aria-label="Close"
-            >
-                ×
-            </button>
-
-
-            <span class="modal-icon">⚙</span>
-
-            <h2>Feature Under Maintenance</h2>
-
-            <p>
-                This function is included in the Detect Now
-                prototype design, but it is not available yet.
-                It will be completed in upcoming days.
-            </p>
-
-
-            <button
-                type="button"
-                id="modal-confirm-button"
-                class="full-button"
-            >
-                Understood
-            </button>
-
-        </div>
-
-    </div>
 
 
     <script src="static/app.js"></script>

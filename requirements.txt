@@ -1,0 +1,9 @@
+Flask
+flask-cors
+torch
+torchvision
+transformers
+Pillow
+safetensors
+numpy<2.3
+opencv-python==4.12.0.88
