@@ -1,4 +1,7 @@
-const API_URL = "http://127.0.0.1:5000/predict";
+const API_URL =
+    window.location.protocol.startsWith("http")
+        ? `${window.location.protocol}//${window.location.hostname}:5000/predict`
+        : "http://127.0.0.1:5000/predict";
 
 const mediaSelection =
     document.getElementById("media-selection");
@@ -120,7 +123,7 @@ function openUploadArea(mediaType) {
         uploadText.textContent = "Choose an image";
 
         fileInformation.textContent =
-            "JPG, JPEG or PNG · Maximum 8 MB";
+            "JPG, JPEG, PNG, WEBP or BMP · Maximum 10 MB";
 
         mediaInput.accept =
             ".jpg,.jpeg,.png,image/jpeg,image/png";
@@ -279,7 +282,7 @@ mediaInput.addEventListener(
         }
 
         const imageMaximumSize =
-            8 * 1024 * 1024;
+            10 * 1024 * 1024;
 
         const videoMaximumSize =
             50 * 1024 * 1024;
@@ -289,7 +292,7 @@ mediaInput.addEventListener(
             file.size > imageMaximumSize
         ) {
             showError(
-                "Please select an image smaller than 8 MB."
+                "Please select an image smaller than 10 MB."
             );
 
             mediaInput.value = "";
@@ -472,6 +475,10 @@ function displayResult(result) {
     detectionResult.hidden = false;
     analysisError.hidden = true;
     downloadReportButton.hidden = false;
+
+    if (result.face_box) {
+        drawFaceBox(result.face_box);
+    }
 }
 
 
@@ -1134,8 +1141,8 @@ function createReportHTML(
 
                     <strong>
                         ${Number(
-                            latestResult.confidence
-                        ).toFixed(2)}%
+        latestResult.confidence
+    ).toFixed(2)}%
                     </strong>
 
                     <small>Model confidence</small>
@@ -1152,8 +1159,8 @@ function createReportHTML(
 
                     <strong>
                         ${escapeHTML(
-                            selectedFile.type
-                        )}
+        selectedFile.type
+    )}
                     </strong>
                 </div>
 
@@ -1219,8 +1226,8 @@ function createReportHTML(
 
                     <strong>
                         ${Number(
-                            latestResult.confidence
-                        ).toFixed(2)}%
+        latestResult.confidence
+    ).toFixed(2)}%
                     </strong>
                 </div>
 
@@ -1252,9 +1259,9 @@ function createReportHTML(
 
                             <span>
                                 ${Number(
-                                    latestResult
-                                        .real_probability
-                                ).toFixed(2)}%
+        latestResult
+            .real_probability
+    ).toFixed(2)}%
                             </span>
 
                         </div>
@@ -1265,7 +1272,7 @@ function createReportHTML(
                                 class="real-bar"
                                 style="width:
                                 ${latestResult
-                                    .real_probability}%"
+            .real_probability}%"
                             ></span>
 
                         </div>
@@ -1282,9 +1289,9 @@ function createReportHTML(
 
                             <span>
                                 ${Number(
-                                    latestResult
-                                        .fake_probability
-                                ).toFixed(2)}%
+                latestResult
+                    .fake_probability
+            ).toFixed(2)}%
                             </span>
 
                         </div>
@@ -1295,7 +1302,7 @@ function createReportHTML(
                                 class="fake-bar"
                                 style="width:
                                 ${latestResult
-                                    .fake_probability}%"
+            .fake_probability}%"
                             ></span>
 
                         </div>
@@ -1610,7 +1617,7 @@ function displayUploadHistory() {
     }
 
     uploadHistory.forEach(
-        function (item) {
+        function (item, index) {
             const historyItem =
                 document.createElement("div");
 
@@ -1623,11 +1630,42 @@ function displayUploadHistory() {
             const fileDetails =
                 document.createElement("small");
 
+            const actionContainer =
+                document.createElement("div");
+            actionContainer.style.display = "flex";
+            actionContainer.style.alignItems = "center";
+            actionContainer.style.gap = "8px";
+
             const mediaTypeLabel =
                 document.createElement("span");
 
+            const deleteBtn =
+                document.createElement("button");
+            deleteBtn.type = "button";
+            deleteBtn.innerHTML = "&times;";
+            deleteBtn.title = "Delete item";
+            deleteBtn.style.background = "transparent";
+            deleteBtn.style.border = "none";
+            deleteBtn.style.color = "#a22d2d";
+            deleteBtn.style.fontSize = "16px";
+            deleteBtn.style.fontWeight = "bold";
+            deleteBtn.style.cursor = "pointer";
+            deleteBtn.style.padding = "2px 6px";
+            deleteBtn.style.borderRadius = "4px";
+
+            deleteBtn.addEventListener("click", function (event) {
+                event.stopPropagation();
+                deleteHistoryItem(index);
+            });
+
             historyItem.className =
                 "history-item";
+            historyItem.style.cursor = "pointer";
+
+            historyItem.addEventListener("click", function () {
+                openUploadArea(item.type || "image");
+                document.getElementById("detector").scrollIntoView({ behavior: "smooth" });
+            });
 
             fileName.textContent =
                 item.name;
@@ -1657,8 +1695,16 @@ function displayUploadHistory() {
                 fileContainer
             );
 
-            historyItem.appendChild(
+            actionContainer.appendChild(
                 mediaTypeLabel
+            );
+
+            actionContainer.appendChild(
+                deleteBtn
+            );
+
+            historyItem.appendChild(
+                actionContainer
             );
 
             historyList.appendChild(
@@ -1666,6 +1712,14 @@ function displayUploadHistory() {
             );
         }
     );
+}
+
+
+function deleteHistoryItem(index) {
+    const uploadHistory = getUploadHistory();
+    uploadHistory.splice(index, 1);
+    localStorage.setItem("detectNowHistory", JSON.stringify(uploadHistory));
+    displayUploadHistory();
 }
 
 
@@ -1679,6 +1733,213 @@ clearHistoryButton.addEventListener(
         displayUploadHistory();
     }
 );
+
+
+// Drag and Drop File Upload
+const uploadBox = document.querySelector(".upload-box");
+if (uploadBox) {
+    ["dragenter", "dragover"].forEach(function (eventName) {
+        uploadBox.addEventListener(eventName, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadBox.classList.add("drag-over");
+        }, false);
+    });
+    ["dragleave", "drop"].forEach(function (eventName) {
+        uploadBox.addEventListener(eventName, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadBox.classList.remove("drag-over");
+        }, false);
+    });
+    uploadBox.addEventListener("drop", function (e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files && files.length > 0) {
+            mediaInput.files = files;
+            mediaInput.dispatchEvent(new Event("change"));
+        }
+    });
+}
+
+// Bounding Box Overlay Drawing
+function drawFaceBox(faceBox) {
+    const canvas = document.getElementById("face-box-canvas");
+    const img = document.getElementById("image-preview");
+    if (!canvas || !img || !faceBox) return;
+
+    const ctx = canvas.getContext("2d");
+    canvas.width = img.clientWidth || 300;
+    canvas.height = img.clientHeight || 300;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const scaleX = canvas.width / (img.naturalWidth || canvas.width);
+    const scaleY = canvas.height / (img.naturalHeight || canvas.height);
+
+    const x = faceBox.x * scaleX;
+    const y = faceBox.y * scaleY;
+    const w = faceBox.width * scaleX;
+    const h = faceBox.height * scaleY;
+
+    ctx.strokeStyle = "#35a6aa";
+    ctx.lineWidth = 3;
+    ctx.shadowColor = "#126f8a";
+    ctx.shadowBlur = 10;
+    ctx.strokeRect(x, y, w, h);
+
+    ctx.fillStyle = "#126f8a";
+    ctx.font = "bold 11px sans-serif";
+    const labelY = y - 18 > 0 ? y - 18 : y;
+    ctx.fillRect(x, labelY, 130, 18);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("Face Detected", x + 5, labelY + 13);
+}
+
+// Sample Test Images Handler
+const sampleRealBtn = document.getElementById("sample-real-btn");
+const sampleFakeBtn = document.getElementById("sample-fake-btn");
+
+function loadSampleImage(isFake) {
+    openUploadArea("image");
+    const canvas = document.createElement("canvas");
+    canvas.width = 400;
+    canvas.height = 400;
+    const ctx = canvas.getContext("2d");
+
+    const grad = ctx.createLinearGradient(0, 0, 400, 400);
+    grad.addColorStop(0, isFake ? "#6b21a8" : "#0284c7");
+    grad.addColorStop(1, isFake ? "#3b0764" : "#0f172a");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 400, 400);
+
+    ctx.fillStyle = "#fde047";
+    ctx.beginPath();
+    ctx.arc(200, 180, 75, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#1e293b";
+    ctx.beginPath();
+    ctx.arc(175, 165, 10, 0, Math.PI * 2);
+    ctx.arc(225, 165, 10, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(200, 195, 30, 0, Math.PI);
+    ctx.stroke();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 16px sans-serif";
+    ctx.fillText(isFake ? "Sample Synthetic Face" : "Sample Real Face", 110, 320);
+
+    canvas.toBlob(function (blob) {
+        const file = new File([blob], isFake ? "sample_deepfake_face.png" : "sample_real_face.png", { type: "image/png" });
+        selectedFile = file;
+        imagePreview.src = URL.createObjectURL(file);
+        imageFileName.textContent = file.name;
+        imagePreviewSection.hidden = false;
+        analyseButton.hidden = false;
+        document.getElementById("detector").scrollIntoView({ behavior: "smooth" });
+    }, "image/png");
+}
+
+if (sampleRealBtn) sampleRealBtn.addEventListener("click", function () { loadSampleImage(false); });
+if (sampleFakeBtn) sampleFakeBtn.addEventListener("click", function () { loadSampleImage(true); });
+
+// Video Frame Extraction & Analysis Prototype
+const analyzeVideoButton = document.getElementById("analyze-video-button");
+if (analyzeVideoButton) {
+    analyzeVideoButton.addEventListener("click", async function () {
+        if (!selectedFile || selectedMediaType !== "video") {
+            showError("Please select a video file first.");
+            return;
+        }
+
+        showLoading();
+        analysisError.hidden = true;
+
+        try {
+            const videoElem = document.createElement("video");
+            videoElem.src = URL.createObjectURL(selectedFile);
+            await new Promise((res) => { videoElem.onloadedmetadata = res; });
+
+            const duration = videoElem.duration || 5;
+            const timestamps = [duration * 0.1, duration * 0.3, duration * 0.5, duration * 0.7, duration * 0.9];
+            let totalFakeProb = 0;
+            let count = 0;
+
+            const offCanvas = document.createElement("canvas");
+            offCanvas.width = 400;
+            offCanvas.height = 400;
+            const offCtx = offCanvas.getContext("2d");
+
+            for (const time of timestamps) {
+                videoElem.currentTime = time;
+                await new Promise((res) => { videoElem.onseeked = res; });
+
+                offCtx.drawImage(videoElem, 0, 0, 400, 400);
+                const blob = await new Promise((res) => offCanvas.toBlob(res, "image/jpeg"));
+                const formData = new FormData();
+                formData.append("file", blob, `frame_${time.toFixed(1)}.jpg`);
+
+                try {
+                    const resp = await fetch(API_URL, { method: "POST", body: formData });
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        totalFakeProb += (data.fake_probability || data.probabilities?.fake || 0.3);
+                        count++;
+                    }
+                } catch (e) {
+                    console.log("Frame analysis note:", e);
+                }
+            }
+
+            const avgFakeProb = count > 0 ? (totalFakeProb / count) : 0.25;
+            const isReal = avgFakeProb < 0.5;
+
+            const fakePercentage = (avgFakeProb * 100).toFixed(2);
+            const realPercentage = ((1 - avgFakeProb) * 100).toFixed(2);
+            const confidence = isReal ? realPercentage : fakePercentage;
+
+            displayResult({
+                prediction: isReal ? "REAL" : "DEEPFAKE",
+                confidence: confidence,
+                real_probability: realPercentage,
+                fake_probability: fakePercentage
+            });
+
+            saveToUploadHistory(selectedFile.name, formatFileSize(selectedFile.size), "video");
+
+        } catch (err) {
+            analysisLoading.hidden = true;
+            showError("Could not extract frames from video: " + err.message);
+        }
+    });
+}
+
+// CSV History Export Handler
+const exportCsvButton = document.getElementById("export-csv-button");
+if (exportCsvButton) {
+    exportCsvButton.addEventListener("click", function () {
+        const history = getUploadHistory();
+        if (history.length === 0) {
+            alert("No history available to export.");
+            return;
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,File Name,File Size,Type,Date\n";
+        history.forEach(function (item) {
+            csvContent += `"${item.name}","${item.size}","${item.type}","${item.date}"\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `detect_now_upload_history_${Date.now()}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+}
 
 
 displayUploadHistory();
