@@ -4,17 +4,11 @@
 <head>
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Detect Now - Deepfake Detection</title>
 
-    <link
-        rel="stylesheet"
-        href="static/style.css"
-    >
+    <link rel="stylesheet" href="static/style.css">
 </head>
 
 <body>
@@ -40,10 +34,7 @@
                 <a href="about.html">About Us</a>
             </div>
 
-            <a
-                href="#detector"
-                class="nav-button"
-            >
+            <a href="#detector" class="nav-button">
                 Check an Image
             </a>
 
@@ -76,17 +67,11 @@
 
                     <div class="hero-buttons">
 
-                        <a
-                            href="#detector"
-                            class="primary-button"
-                        >
+                        <a href="#detector" class="primary-button">
                             Start Detection
                         </a>
 
-                        <a
-                            href="#how-it-works"
-                            class="secondary-button"
-                        >
+                        <a href="#how-it-works" class="secondary-button">
                             How It Works
                         </a>
 
@@ -100,10 +85,7 @@
 
                 </div>
 
-                <div
-                    id="detector"
-                    class="detector-card"
-                >
+                <div id="detector" class="detector-card">
 
                     <div class="card-heading">
 
@@ -125,16 +107,9 @@
                         Select the type of media you want to analyse.
                     </p>
 
-                    <div
-                        id="media-selection"
-                        class="media-selection"
-                    >
+                    <div id="media-selection" class="media-selection">
 
-                        <button
-                            type="button"
-                            id="select-image-button"
-                            class="media-button"
-                        >
+                        <button type="button" id="select-image-button" class="media-button">
 
                             <span class="media-icon image-icon">
                                 ▧
@@ -158,11 +133,7 @@
 
                         </button>
 
-                        <button
-                            type="button"
-                            id="select-video-button"
-                            class="media-button"
-                        >
+                        <button type="button" id="select-video-button" class="media-button">
 
                             <span class="media-icon video-icon">
                                 ▶
@@ -188,26 +159,15 @@
 
                     </div>
 
-                    <div
-                        id="upload-area"
-                        class="upload-area"
-                        hidden
-                    >
+                    <div id="upload-area" class="upload-area" hidden>
 
-                        <button
-                            type="button"
-                            id="back-button"
-                            class="back-button"
-                        >
+                        <button type="button" id="back-button" class="back-button">
                             ← Change media type
                         </button>
 
                         <div class="selected-type-heading">
 
-                            <span
-                                id="selected-type-icon"
-                                class="selected-type-icon"
-                            >
+                            <span id="selected-type-icon" class="selected-type-icon">
                                 ▧
                             </span>
 
@@ -225,10 +185,7 @@
 
                         </div>
 
-                        <label
-                            for="media-input"
-                            class="upload-box"
-                        >
+                        <label for="media-input" class="upload-box">
 
                             <span class="upload-cloud">
                                 ↑
@@ -246,23 +203,13 @@
                                 JPG, JPEG or PNG · Maximum 8 MB
                             </small>
 
-                            <input
-                                type="file"
-                                id="media-input"
-                            >
+                            <input type="file" id="media-input">
 
                         </label>
 
-                        <div
-                            id="image-preview-section"
-                            class="preview-section"
-                            hidden
-                        >
+                        <div id="image-preview-section" class="preview-section" hidden>
 
-                            <img
-                                id="image-preview"
-                                alt="Selected image"
-                            >
+                            <img id="image-preview" alt="Selected image">
 
                             <div class="preview-information">
 
@@ -276,16 +223,9 @@
 
                         </div>
 
-                        <div
-                            id="video-preview-section"
-                            class="preview-section"
-                            hidden
-                        >
+                        <div id="video-preview-section" class="preview-section" hidden>
 
-                            <video
-                                id="video-preview"
-                                controls
-                            ></video>
+                            <video id="video-preview" controls></video>
 
                             <div class="preview-information">
 
@@ -299,11 +239,7 @@
 
                         </div>
 
-                        <div
-                            id="video-notice"
-                            class="analysis-error"
-                            hidden
-                        >
+                        <div id="video-notice" class="analysis-error" hidden>
 
                             <span>i</span>
 
@@ -319,15 +255,20 @@
                                     Image detection is currently available.
                                 </p>
 
+                                <button type="button" id="switch-to-image-button" class="secondary-button"
+                                    style="margin-top: 12px; padding: 6px 14px; font-size: 12px;">
+                                    Switch to Image Detection
+                                </button>
+                                <button type="button" id="analyze-video-button" class="primary-button"
+                                    style="margin-top: 12px; padding: 6px 14px; font-size: 12px; margin-left: 6px;">
+                                    🎬 Extract Frames & Analyze Video
+                                </button>
+
                             </div>
 
                         </div>
 
-                        <div
-                            id="analysis-loading"
-                            class="analysis-loading"
-                            hidden
-                        >
+                        <div id="analysis-loading" class="analysis-loading" hidden>
 
                             <span class="loading-spinner"></span>
 
@@ -346,11 +287,7 @@
 
                         </div>
 
-                        <div
-                            id="analysis-error"
-                            class="analysis-error"
-                            hidden
-                        >
+                        <div id="analysis-error" class="analysis-error" hidden>
 
                             <span>!</span>
 
@@ -368,11 +305,7 @@
 
                         </div>
 
-                        <div
-                            id="detection-result"
-                            class="detection-result"
-                            hidden
-                        >
+                        <div id="detection-result" class="detection-result" hidden>
 
                             <div class="result-heading">
 
@@ -434,30 +367,15 @@
 
                         </div>
 
-                        <button
-                            type="button"
-                            id="analyse-button"
-                            class="full-button"
-                            hidden
-                        >
+                        <button type="button" id="analyse-button" class="full-button" hidden>
                             Analyse Image
                         </button>
 
-                        <button
-                            type="button"
-                            id="download-report-button"
-                            class="report-button"
-                            hidden
-                        >
+                        <button type="button" id="download-report-button" class="report-button" hidden>
                             View and Download Report
                         </button>
 
-                        <button
-                            type="button"
-                            id="upload-again-button"
-                            class="full-button"
-                            hidden
-                        >
+                        <button type="button" id="upload-again-button" class="full-button" hidden>
                             Upload Another File
                         </button>
 
@@ -505,10 +423,7 @@
 
         </section>
 
-        <section
-            id="features"
-            class="content-section"
-        >
+        <section id="features" class="content-section">
 
             <div class="section-heading">
 
@@ -648,10 +563,7 @@
 
         </section>
 
-        <section
-            id="how-it-works"
-            class="how-section"
-        >
+        <section id="how-it-works" class="how-section">
 
             <div class="section-heading">
 
@@ -734,10 +646,7 @@
 
         </section>
 
-        <section
-            id="history"
-            class="content-section history-section"
-        >
+        <section id="history" class="content-section history-section">
 
             <div class="history-card">
 
@@ -758,13 +667,14 @@
 
                     </div>
 
-                    <button
-                        type="button"
-                        id="clear-history-button"
-                        class="outline-button"
-                    >
-                        Clear History
-                    </button>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="button" id="export-csv-button" class="outline-button">
+                            Export CSV
+                        </button>
+                        <button type="button" id="clear-history-button" class="outline-button">
+                            Clear History
+                        </button>
+                    </div>
 
                 </div>
 
@@ -815,10 +725,7 @@
 
             </div>
 
-            <a
-                href="about.html"
-                class="secondary-button"
-            >
+            <a href="about.html" class="secondary-button">
                 About Our Project
             </a>
 
