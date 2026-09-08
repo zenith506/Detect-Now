@@ -1,137 +1,106 @@
 const API_URL = "http://127.0.0.1:5000/predict";
 
-const mediaSelection = document.getElementById(
-    "media-selection"
-);
+const mediaSelection =
+    document.getElementById("media-selection");
 
-const uploadArea = document.getElementById(
-    "upload-area"
-);
+const uploadArea =
+    document.getElementById("upload-area");
 
-const selectImageButton = document.getElementById(
-    "select-image-button"
-);
+const selectImageButton =
+    document.getElementById("select-image-button");
 
-const selectVideoButton = document.getElementById(
-    "select-video-button"
-);
+const selectVideoButton =
+    document.getElementById("select-video-button");
 
-const backButton = document.getElementById(
-    "back-button"
-);
+const backButton =
+    document.getElementById("back-button");
 
-const selectedTypeIcon = document.getElementById(
-    "selected-type-icon"
-);
+const selectedTypeIcon =
+    document.getElementById("selected-type-icon");
 
-const uploadHeading = document.getElementById(
-    "upload-heading"
-);
+const uploadHeading =
+    document.getElementById("upload-heading");
 
-const uploadDescription = document.getElementById(
-    "upload-description"
-);
+const uploadDescription =
+    document.getElementById("upload-description");
 
-const uploadText = document.getElementById(
-    "upload-text"
-);
+const uploadText =
+    document.getElementById("upload-text");
 
-const fileInformation = document.getElementById(
-    "file-information"
-);
+const fileInformation =
+    document.getElementById("file-information");
 
-const mediaInput = document.getElementById(
-    "media-input"
-);
+const mediaInput =
+    document.getElementById("media-input");
 
-const imagePreviewSection = document.getElementById(
-    "image-preview-section"
-);
+const imagePreviewSection =
+    document.getElementById("image-preview-section");
 
-const imagePreview = document.getElementById(
-    "image-preview"
-);
+const imagePreview =
+    document.getElementById("image-preview");
 
-const imageFileName = document.getElementById(
-    "image-file-name"
-);
+const imageFileName =
+    document.getElementById("image-file-name");
 
-const videoPreviewSection = document.getElementById(
-    "video-preview-section"
-);
+const videoPreviewSection =
+    document.getElementById("video-preview-section");
 
-const videoPreview = document.getElementById(
-    "video-preview"
-);
+const videoPreview =
+    document.getElementById("video-preview");
 
-const videoFileName = document.getElementById(
-    "video-file-name"
-);
+const videoFileName =
+    document.getElementById("video-file-name");
 
-const videoNotice = document.getElementById(
-    "video-notice"
-);
+const videoNotice =
+    document.getElementById("video-notice");
 
-const analysisLoading = document.getElementById(
-    "analysis-loading"
-);
+const analysisLoading =
+    document.getElementById("analysis-loading");
 
-const analysisError = document.getElementById(
-    "analysis-error"
-);
+const analysisError =
+    document.getElementById("analysis-error");
 
-const analysisErrorText = document.getElementById(
-    "analysis-error-text"
-);
+const analysisErrorText =
+    document.getElementById("analysis-error-text");
 
-const detectionResult = document.getElementById(
-    "detection-result"
-);
+const detectionResult =
+    document.getElementById("detection-result");
 
-const predictionText = document.getElementById(
-    "prediction-text"
-);
+const predictionText =
+    document.getElementById("prediction-text");
 
-const confidenceText = document.getElementById(
-    "confidence-text"
-);
+const confidenceText =
+    document.getElementById("confidence-text");
 
-const confidenceBarFill = document.getElementById(
-    "confidence-bar-fill"
-);
+const confidenceBarFill =
+    document.getElementById("confidence-bar-fill");
 
-const realProbability = document.getElementById(
-    "real-probability"
-);
+const realProbability =
+    document.getElementById("real-probability");
 
-const fakeProbability = document.getElementById(
-    "fake-probability"
-);
+const fakeProbability =
+    document.getElementById("fake-probability");
 
-const analyseButton = document.getElementById(
-    "analyse-button"
-);
+const analyseButton =
+    document.getElementById("analyse-button");
 
-const downloadReportButton = document.getElementById(
-    "download-report-button"
-);
+const downloadReportButton =
+    document.getElementById("download-report-button");
 
-const uploadAgainButton = document.getElementById(
-    "upload-again-button"
-);
+const uploadAgainButton =
+    document.getElementById("upload-again-button");
 
-const clearHistoryButton = document.getElementById(
-    "clear-history-button"
-);
+const clearHistoryButton =
+    document.getElementById("clear-history-button");
 
-const historyList = document.getElementById(
-    "history-list"
-);
+const historyList =
+    document.getElementById("history-list");
 
 let selectedMediaType = "";
 let selectedFile = null;
 let currentPreviewURL = "";
 let latestResult = null;
+
 
 function openUploadArea(mediaType) {
     selectedMediaType = mediaType;
@@ -171,6 +140,7 @@ function openUploadArea(mediaType) {
             ".mp4,.webm,.mov,video/mp4,video/webm,video/quicktime";
     }
 }
+
 
 function resetSelectedFile() {
     selectedFile = null;
@@ -212,6 +182,7 @@ function resetSelectedFile() {
     }
 }
 
+
 function resetResultAreas() {
     latestResult = null;
 
@@ -230,13 +201,19 @@ function resetResultAreas() {
     );
 }
 
+
 function showError(message) {
+    latestResult = null;
+
     analysisErrorText.textContent = message;
     analysisError.hidden = false;
     analysisLoading.hidden = true;
     detectionResult.hidden = true;
     downloadReportButton.hidden = true;
+
+    confidenceBarFill.style.width = "0%";
 }
+
 
 selectImageButton.addEventListener(
     "click",
@@ -245,12 +222,14 @@ selectImageButton.addEventListener(
     }
 );
 
+
 selectVideoButton.addEventListener(
     "click",
     function () {
         openUploadArea("video");
     }
 );
+
 
 backButton.addEventListener(
     "click",
@@ -259,10 +238,10 @@ backButton.addEventListener(
 
         uploadArea.hidden = true;
         mediaSelection.hidden = false;
-
         selectedMediaType = "";
     }
 );
+
 
 mediaInput.addEventListener(
     "change",
@@ -284,7 +263,6 @@ mediaInput.addEventListener(
             );
 
             mediaInput.value = "";
-
             return;
         }
 
@@ -297,12 +275,14 @@ mediaInput.addEventListener(
             );
 
             mediaInput.value = "";
-
             return;
         }
 
-        const imageMaximumSize = 8 * 1024 * 1024;
-        const videoMaximumSize = 50 * 1024 * 1024;
+        const imageMaximumSize =
+            8 * 1024 * 1024;
+
+        const videoMaximumSize =
+            50 * 1024 * 1024;
 
         if (
             selectedMediaType === "image" &&
@@ -313,7 +293,6 @@ mediaInput.addEventListener(
             );
 
             mediaInput.value = "";
-
             return;
         }
 
@@ -326,7 +305,6 @@ mediaInput.addEventListener(
             );
 
             mediaInput.value = "";
-
             return;
         }
 
@@ -336,7 +314,8 @@ mediaInput.addEventListener(
             URL.revokeObjectURL(currentPreviewURL);
         }
 
-        currentPreviewURL = URL.createObjectURL(file);
+        currentPreviewURL =
+            URL.createObjectURL(file);
 
         if (selectedMediaType === "image") {
             imagePreview.src = currentPreviewURL;
@@ -365,6 +344,7 @@ mediaInput.addEventListener(
         );
     }
 );
+
 
 analyseButton.addEventListener(
     "click",
@@ -400,10 +380,19 @@ analyseButton.addEventListener(
                 }
             );
 
-            const result = await response.json();
+            let result;
 
-            if (!response.ok) {
+            try {
+                result = await response.json();
+            } catch (error) {
                 throw new Error(
+                    "The detection server returned an invalid response."
+                );
+            }
+
+            if (!response.ok || result.success === false) {
+                throw new Error(
+                    result.message ||
                     result.error ||
                     "The image could not be analysed."
                 );
@@ -416,9 +405,12 @@ analyseButton.addEventListener(
 
             displayResult(latestResult);
         } catch (error) {
-            if (error.message === "Failed to fetch") {
+            if (
+                error.message === "Failed to fetch" ||
+                error instanceof TypeError
+            ) {
                 showError(
-                    "The detection server is not available. Start backend.py and try again."
+                    "The detection server is unavailable. Start backend.py and try again."
                 );
             } else {
                 showError(error.message);
@@ -432,9 +424,17 @@ analyseButton.addEventListener(
     }
 );
 
+
 function displayResult(result) {
+    const normalizedPrediction = String(
+        result.prediction
+    ).toUpperCase();
+
+    const isReal =
+        normalizedPrediction === "REAL";
+
     predictionText.textContent =
-        result.prediction;
+        isReal ? "REAL" : "DEEPFAKE";
 
     confidenceText.textContent =
         Number(result.confidence).toFixed(2) +
@@ -449,7 +449,13 @@ function displayResult(result) {
         "%";
 
     confidenceBarFill.style.width =
-        result.confidence + "%";
+        Math.min(
+            100,
+            Math.max(
+                0,
+                Number(result.confidence)
+            )
+        ) + "%";
 
     detectionResult.classList.remove(
         "real-result",
@@ -457,26 +463,17 @@ function displayResult(result) {
         "uncertain-result"
     );
 
-    if (result.prediction === "Likely Real") {
-        detectionResult.classList.add(
-            "real-result"
-        );
-    } else if (
-        result.prediction === "Likely Deepfake"
-    ) {
-        detectionResult.classList.add(
-            "fake-result"
-        );
-    } else {
-        detectionResult.classList.add(
-            "uncertain-result"
-        );
-    }
+    detectionResult.classList.add(
+        isReal
+            ? "real-result"
+            : "fake-result"
+    );
 
     detectionResult.hidden = false;
     analysisError.hidden = true;
     downloadReportButton.hidden = false;
 }
+
 
 uploadAgainButton.addEventListener(
     "click",
@@ -485,6 +482,7 @@ uploadAgainButton.addEventListener(
         mediaInput.click();
     }
 );
+
 
 downloadReportButton.addEventListener(
     "click",
@@ -504,7 +502,7 @@ downloadReportButton.addEventListener(
 
         if (!reportWindow) {
             showError(
-                "The browser blocked the report window. Please allow pop-ups and try again."
+                "The browser blocked the report window. Allow pop-ups and try again."
             );
 
             return;
@@ -515,25 +513,32 @@ downloadReportButton.addEventListener(
         );
 
         try {
-            const imageData = await readFileAsDataURL(
-                selectedFile
-            );
+            const imageData =
+                await readFileAsDataURL(
+                    selectedFile
+                );
 
-            const checksum = await calculateChecksum(
-                selectedFile
-            );
+            const checksum =
+                await calculateChecksum(
+                    selectedFile
+                );
 
             const imageDimensions =
-                await getImageDimensions(imageData);
+                await getImageDimensions(
+                    imageData
+                );
 
-            const reportHTML = createReportHTML(
-                imageData,
-                checksum,
-                imageDimensions
-            );
+            const reportHTML =
+                createReportHTML(
+                    imageData,
+                    checksum,
+                    imageDimensions
+                );
 
             reportWindow.document.open();
-            reportWindow.document.write(reportHTML);
+            reportWindow.document.write(
+                reportHTML
+            );
             reportWindow.document.close();
         } catch (error) {
             reportWindow.close();
@@ -544,6 +549,7 @@ downloadReportButton.addEventListener(
         }
     }
 );
+
 
 function readFileAsDataURL(file) {
     return new Promise(
@@ -561,6 +567,7 @@ function readFileAsDataURL(file) {
     );
 }
 
+
 async function calculateChecksum(file) {
     const fileBuffer =
         await file.arrayBuffer();
@@ -571,10 +578,9 @@ async function calculateChecksum(file) {
             fileBuffer
         );
 
-    const hashArray =
-        Array.from(
-            new Uint8Array(hashBuffer)
-        );
+    const hashArray = Array.from(
+        new Uint8Array(hashBuffer)
+    );
 
     return hashArray
         .map(function (byte) {
@@ -584,6 +590,7 @@ async function calculateChecksum(file) {
         })
         .join("");
 }
+
 
 function getImageDimensions(imageData) {
     return new Promise(
@@ -603,14 +610,16 @@ function getImageDimensions(imageData) {
     );
 }
 
+
 function escapeHTML(value) {
-    return String(value)
+    return String(value ?? "")
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
 }
+
 
 function createReportHTML(
     imageData,
@@ -620,27 +629,32 @@ function createReportHTML(
     const safeFileName =
         escapeHTML(selectedFile.name);
 
+    const normalizedPrediction = String(
+        latestResult.prediction
+    ).toUpperCase();
+
     const safePrediction =
-        escapeHTML(latestResult.prediction);
+        normalizedPrediction === "REAL"
+            ? "REAL"
+            : "DEEPFAKE";
 
-    const safeModel =
-        escapeHTML(latestResult.model);
+    const safeModel = escapeHTML(
+        latestResult.model ||
+        latestResult.model_name ||
+        "Detect Now EfficientNetB0"
+    );
 
-    const analysisDate =
-        new Date(
-            latestResult.analysedAt
-        ).toLocaleString();
+    const analysisDate = new Date(
+        latestResult.analysedAt
+    ).toLocaleString();
 
     const fileSize =
         formatFileSize(selectedFile.size);
 
     const verdictClass =
-        latestResult.prediction === "Likely Real"
+        safePrediction === "REAL"
             ? "real"
-            : latestResult.prediction ===
-              "Likely Deepfake"
-                ? "fake"
-                : "uncertain";
+            : "fake";
 
     return `
 <!DOCTYPE html>
@@ -691,7 +705,7 @@ function createReportHTML(
 
         .report-actions .download {
             background: #1b829b;
-            color: white;
+            color: #ffffff;
         }
 
         .report {
@@ -703,9 +717,10 @@ function createReportHTML(
             min-height: 1120px;
             margin-bottom: 24px;
             padding: 48px;
-            background: white;
+            background: #ffffff;
             border-radius: 4px;
-            box-shadow: 0 12px 35px rgba(13, 39, 64, 0.10);
+            box-shadow: 0 12px 35px
+                rgba(13, 39, 64, 0.10);
             break-after: page;
         }
 
@@ -733,8 +748,12 @@ function createReportHTML(
             width: 45px;
             height: 45px;
             place-items: center;
-            background: linear-gradient(135deg, #126f8a, #5d6ee7);
-            color: white;
+            background: linear-gradient(
+                135deg,
+                #126f8a,
+                #5d6ee7
+            );
+            color: #ffffff;
             border-radius: 11px;
             font-weight: bold;
         }
@@ -844,11 +863,6 @@ function createReportHTML(
             color: #a22d2d;
         }
 
-        .verdict.uncertain {
-            background: #fff1ce;
-            color: #8a6300;
-        }
-
         .report-section {
             margin-top: 22px;
             overflow: hidden;
@@ -949,7 +963,8 @@ function createReportHTML(
             max-height: 600px;
             object-fit: contain;
             border-radius: 6px;
-            box-shadow: 0 8px 24px rgba(13, 39, 64, 0.12);
+            box-shadow: 0 8px 24px
+                rgba(13, 39, 64, 0.12);
         }
 
         .notice {
@@ -980,7 +995,7 @@ function createReportHTML(
             }
 
             body {
-                background: white;
+                background: #ffffff;
             }
 
             .report-actions {
@@ -1037,7 +1052,6 @@ function createReportHTML(
 
     </div>
 
-
     <main class="report">
 
         <section class="page">
@@ -1052,19 +1066,21 @@ function createReportHTML(
 
                     <div>
                         <strong>Detect Now</strong>
-                        <span>Deepfake Detection Prototype</span>
+                        <span>
+                            Deepfake Detection Prototype
+                        </span>
                     </div>
 
                 </div>
 
-
                 <div class="header-details">
                     <strong>DETECTION REPORT</strong>
-                    <span>${escapeHTML(analysisDate)}</span>
+                    <span>
+                        ${escapeHTML(analysisDate)}
+                    </span>
                 </div>
 
             </header>
-
 
             <div class="report-title">
 
@@ -1073,17 +1089,20 @@ function createReportHTML(
                 <h1>${safeFileName}</h1>
 
                 <p>
-                    Image · Analysed ${escapeHTML(analysisDate)}
+                    Image · Analysed
+                    ${escapeHTML(analysisDate)}
                 </p>
 
             </div>
-
 
             <div class="summary-grid">
 
                 <div class="summary-card">
                     <span>VERDICT</span>
-                    <strong class="verdict ${verdictClass}">
+
+                    <strong
+                        class="verdict ${verdictClass}"
+                    >
                         ${safePrediction}
                     </strong>
                 </div>
@@ -1091,6 +1110,7 @@ function createReportHTML(
                 <div class="summary-card">
                     <span>MEDIA</span>
                     <strong>Image</strong>
+
                     <small>
                         ${safeFileName}<br>
                         ${escapeHTML(fileSize)}
@@ -1099,22 +1119,29 @@ function createReportHTML(
 
                 <div class="summary-card">
                     <span>SUBMITTED</span>
+
                     <strong>
                         ${escapeHTML(analysisDate)}
                     </strong>
-                    <small>Human face detected</small>
+
+                    <small>
+                        Human face detected
+                    </small>
                 </div>
 
                 <div class="summary-card">
                     <span>CONFIDENCE</span>
+
                     <strong>
-                        ${Number(latestResult.confidence).toFixed(2)}%
+                        ${Number(
+                            latestResult.confidence
+                        ).toFixed(2)}%
                     </strong>
+
                     <small>Model confidence</small>
                 </div>
 
             </div>
-
 
             <section class="report-section">
 
@@ -1122,8 +1149,11 @@ function createReportHTML(
 
                 <div class="detail-row">
                     <span>File type</span>
+
                     <strong>
-                        ${escapeHTML(selectedFile.type)}
+                        ${escapeHTML(
+                            selectedFile.type
+                        )}
                     </strong>
                 </div>
 
@@ -1134,6 +1164,7 @@ function createReportHTML(
 
                 <div class="detail-row">
                     <span>File size</span>
+
                     <strong>
                         ${escapeHTML(fileSize)}
                     </strong>
@@ -1141,14 +1172,17 @@ function createReportHTML(
 
                 <div class="detail-row">
                     <span>Dimensions</span>
+
                     <strong>
                         ${imageDimensions.width} ×
-                        ${imageDimensions.height} pixels
+                        ${imageDimensions.height}
+                        pixels
                     </strong>
                 </div>
 
                 <div class="detail-row">
                     <span>Analysis date</span>
+
                     <strong>
                         ${escapeHTML(analysisDate)}
                     </strong>
@@ -1161,6 +1195,7 @@ function createReportHTML(
 
                 <div class="detail-row">
                     <span>SHA-256 checksum</span>
+
                     <strong>
                         ${escapeHTML(checksum)}
                     </strong>
@@ -1168,10 +1203,11 @@ function createReportHTML(
 
             </section>
 
-
             <section class="report-section">
 
-                <h2>Deepfake Detection Results</h2>
+                <h2>
+                    Deepfake Detection Results
+                </h2>
 
                 <div class="detail-row">
                     <span>Prediction</span>
@@ -1180,8 +1216,11 @@ function createReportHTML(
 
                 <div class="detail-row">
                     <span>Model confidence</span>
+
                     <strong>
-                        ${Number(latestResult.confidence).toFixed(2)}%
+                        ${Number(
+                            latestResult.confidence
+                        ).toFixed(2)}%
                     </strong>
                 </div>
 
@@ -1191,7 +1230,13 @@ function createReportHTML(
                 </div>
 
                 <div class="detail-row">
+                    <span>Architecture</span>
+                    <strong>EfficientNetB0</strong>
+                </div>
+
+                <div class="detail-row">
                     <span>Face validation</span>
+
                     <strong>
                         Passed - human face detected
                     </strong>
@@ -1202,38 +1247,57 @@ function createReportHTML(
                     <div class="probability-item">
 
                         <div class="probability-heading">
+
                             <span>Real probability</span>
+
                             <span>
-                                ${Number(latestResult.real_probability).toFixed(2)}%
+                                ${Number(
+                                    latestResult
+                                        .real_probability
+                                ).toFixed(2)}%
                             </span>
+
                         </div>
 
                         <div class="bar">
+
                             <span
                                 class="real-bar"
                                 style="width:
-                                ${latestResult.real_probability}%"
+                                ${latestResult
+                                    .real_probability}%"
                             ></span>
+
                         </div>
 
                     </div>
 
-
                     <div class="probability-item">
 
                         <div class="probability-heading">
-                            <span>Deepfake probability</span>
+
                             <span>
-                                ${Number(latestResult.fake_probability).toFixed(2)}%
+                                Deepfake probability
                             </span>
+
+                            <span>
+                                ${Number(
+                                    latestResult
+                                        .fake_probability
+                                ).toFixed(2)}%
+                            </span>
+
                         </div>
 
                         <div class="bar">
+
                             <span
                                 class="fake-bar"
                                 style="width:
-                                ${latestResult.fake_probability}%"
+                                ${latestResult
+                                    .fake_probability}%"
                             ></span>
+
                         </div>
 
                     </div>
@@ -1242,18 +1306,17 @@ function createReportHTML(
 
             </section>
 
-
             <div class="notice">
 
                 <strong>Important:</strong>
 
-                This report contains an experimental model
-                prediction. It should not be treated as
-                forensic proof or used as the only evidence
-                for an important decision.
+                This report contains an experimental
+                prediction from our trained EfficientNetB0
+                model. It should not be treated as forensic
+                proof or used as the only evidence for an
+                important decision.
 
             </div>
-
 
             <div class="report-footer">
                 <span>Detect Now · Group 20</span>
@@ -1261,7 +1324,6 @@ function createReportHTML(
             </div>
 
         </section>
-
 
         <section class="page">
 
@@ -1275,11 +1337,13 @@ function createReportHTML(
 
                     <div>
                         <strong>Detect Now</strong>
-                        <span>Deepfake Detection Prototype</span>
+
+                        <span>
+                            Deepfake Detection Prototype
+                        </span>
                     </div>
 
                 </div>
-
 
                 <div class="header-details">
                     <strong>MEDIA REVIEW</strong>
@@ -1287,7 +1351,6 @@ function createReportHTML(
                 </div>
 
             </header>
-
 
             <section class="report-section">
 
@@ -1304,52 +1367,66 @@ function createReportHTML(
 
             </section>
 
-
             <section class="report-section">
 
                 <h2>Analysis Information</h2>
 
                 <div class="detail-row">
                     <span>Analysis method</span>
+
                     <p>
-                        The system detected and cropped the
-                        largest visible human face. The cropped
-                        face was then processed by a pretrained
-                        image-classification model.
+                        The system first confirmed that the
+                        image contained a visible human face.
+                        The complete image was resized to
+                        224 × 224 pixels and processed by our
+                        trained EfficientNetB0 model.
                     </p>
                 </div>
 
                 <div class="detail-row">
-                    <span>Scene description</span>
+                    <span>Training dataset</span>
+
                     <p>
-                        Not analysed by the current prototype.
+                        Balanced real and fake facial frames
+                        from the public DFDC Part 34 dataset.
                     </p>
                 </div>
 
                 <div class="detail-row">
-                    <span>Manipulation location</span>
+                    <span>Training method</span>
+
                     <p>
-                        Not analysed by the current prototype.
+                        Transfer learning with ImageNet weights,
+                        followed by EfficientNetB0 fine-tuning.
                     </p>
                 </div>
 
                 <div class="detail-row">
-                    <span>Liveness detection</span>
-                    <p>
-                        Not analysed by the current prototype.
-                    </p>
+                    <span>Test accuracy</span>
+                    <strong>76.67%</strong>
                 </div>
 
                 <div class="detail-row">
-                    <span>Content credentials</span>
-                    <p>
-                        C2PA credentials are not checked by
-                        the current prototype.
-                    </p>
+                    <span>Test precision</span>
+                    <strong>82.56%</strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Test recall</span>
+                    <strong>67.62%</strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Test F1-score</span>
+                    <strong>74.35%</strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Test AUC</span>
+                    <strong>87.09%</strong>
                 </div>
 
             </section>
-
 
             <section class="report-section">
 
@@ -1357,6 +1434,7 @@ function createReportHTML(
 
                 <div class="detail-row">
                     <span>Image quality</span>
+
                     <p>
                         Compression, blur, lighting and low
                         resolution may affect the prediction.
@@ -1365,23 +1443,26 @@ function createReportHTML(
 
                 <div class="detail-row">
                     <span>Face position</span>
+
                     <p>
-                        Side-facing, covered or very small faces
-                        may not be detected correctly.
+                        Side-facing, covered or very small
+                        faces may not be detected correctly.
                     </p>
                 </div>
 
                 <div class="detail-row">
                     <span>Model coverage</span>
+
                     <p>
-                        Deepfake methods that were not represented
-                        in the training dataset may be more
+                        Deepfake methods not represented in
+                        the training dataset may be more
                         difficult to identify.
                     </p>
                 </div>
 
                 <div class="detail-row">
                     <span>Interpretation</span>
+
                     <p>
                         Model confidence is not the same as
                         guaranteed accuracy.
@@ -1390,12 +1471,15 @@ function createReportHTML(
 
             </section>
 
-
             <div class="report-footer">
+
                 <span>
-                    Charles Darwin University Academic Prototype
+                    Charles Darwin University
+                    Academic Prototype
                 </span>
+
                 <span>Page 2 of 2</span>
+
             </div>
 
         </section>
@@ -1407,6 +1491,7 @@ function createReportHTML(
 </html>
     `;
 }
+
 
 function formatFileSize(fileSize) {
     if (fileSize < 1024 * 1024) {
@@ -1424,6 +1509,7 @@ function formatFileSize(fileSize) {
         " MB"
     );
 }
+
 
 function getUploadHistory() {
     const savedHistory =
@@ -1445,6 +1531,7 @@ function getUploadHistory() {
         return [];
     }
 }
+
 
 function saveHistoryItem(
     fileName,
@@ -1471,6 +1558,7 @@ function saveHistoryItem(
 
     displayUploadHistory();
 }
+
 
 function displayUploadHistory() {
     const uploadHistory =
@@ -1580,6 +1668,7 @@ function displayUploadHistory() {
     );
 }
 
+
 clearHistoryButton.addEventListener(
     "click",
     function () {
@@ -1590,5 +1679,6 @@ clearHistoryButton.addEventListener(
         displayUploadHistory();
     }
 );
+
 
 displayUploadHistory();

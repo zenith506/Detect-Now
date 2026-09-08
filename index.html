@@ -31,7 +31,6 @@
                 </span>
             </a>
 
-
             <div class="nav-links">
                 <a href="#home">Home</a>
                 <a href="#detector">Detector</a>
@@ -40,7 +39,6 @@
                 <a href="#history">History</a>
                 <a href="about.html">About Us</a>
             </div>
-
 
             <a
                 href="#detector"
@@ -53,7 +51,6 @@
 
     </nav>
 
-
     <main id="home">
 
         <section class="hero-section">
@@ -63,7 +60,7 @@
                 <div class="hero-text">
 
                     <span class="hero-label">
-                        AI-POWERED MEDIA ANALYSIS
+                        TRAINED DEEPFAKE DETECTION
                     </span>
 
                     <h1>
@@ -72,11 +69,10 @@
                     </h1>
 
                     <p>
-                        Upload an image and use our pretrained
-                        deep-learning model to check whether it
-                        may be real or artificially generated.
+                        Upload a facial image and use our trained
+                        EfficientNetB0 model to check whether the
+                        content is likely to be real or deepfake.
                     </p>
-
 
                     <div class="hero-buttons">
 
@@ -96,7 +92,6 @@
 
                     </div>
 
-
                     <div class="hero-points">
                         <span>✓ Simple upload</span>
                         <span>✓ Human-face validation</span>
@@ -104,7 +99,6 @@
                     </div>
 
                 </div>
-
 
                 <div
                     id="detector"
@@ -121,18 +115,15 @@
                             <h2>Check your media</h2>
                         </div>
 
-
                         <span class="status-badge">
                             Model Online
                         </span>
 
                     </div>
 
-
                     <p class="card-description">
                         Select the type of media you want to analyse.
                     </p>
-
 
                     <div
                         id="media-selection"
@@ -149,7 +140,6 @@
                                 ▧
                             </span>
 
-
                             <span class="media-details">
 
                                 <strong>
@@ -162,13 +152,11 @@
 
                             </span>
 
-
                             <span class="media-arrow">
                                 →
                             </span>
 
                         </button>
-
 
                         <button
                             type="button"
@@ -179,7 +167,6 @@
                             <span class="media-icon video-icon">
                                 ▶
                             </span>
-
 
                             <span class="media-details">
 
@@ -193,7 +180,6 @@
 
                             </span>
 
-
                             <span class="media-arrow">
                                 →
                             </span>
@@ -201,7 +187,6 @@
                         </button>
 
                     </div>
-
 
                     <div
                         id="upload-area"
@@ -217,7 +202,6 @@
                             ← Change media type
                         </button>
 
-
                         <div class="selected-type-heading">
 
                             <span
@@ -226,7 +210,6 @@
                             >
                                 ▧
                             </span>
-
 
                             <div>
 
@@ -241,7 +224,6 @@
                             </div>
 
                         </div>
-
 
                         <label
                             for="media-input"
@@ -271,7 +253,6 @@
 
                         </label>
 
-
                         <div
                             id="image-preview-section"
                             class="preview-section"
@@ -282,7 +263,6 @@
                                 id="image-preview"
                                 alt="Selected image"
                             >
-
 
                             <div class="preview-information">
 
@@ -296,7 +276,6 @@
 
                         </div>
 
-
                         <div
                             id="video-preview-section"
                             class="preview-section"
@@ -307,7 +286,6 @@
                                 id="video-preview"
                                 controls
                             ></video>
-
 
                             <div class="preview-information">
 
@@ -321,7 +299,6 @@
 
                         </div>
 
-
                         <div
                             id="video-notice"
                             class="analysis-error"
@@ -329,7 +306,6 @@
                         >
 
                             <span>i</span>
-
 
                             <div>
 
@@ -347,7 +323,6 @@
 
                         </div>
 
-
                         <div
                             id="analysis-loading"
                             class="analysis-loading"
@@ -356,7 +331,6 @@
 
                             <span class="loading-spinner"></span>
 
-
                             <div>
 
                                 <h3>
@@ -364,14 +338,13 @@
                                 </h3>
 
                                 <p>
-                                    The pretrained model is checking
+                                    The trained EfficientNetB0 model is checking
                                     the selected image. Please wait.
                                 </p>
 
                             </div>
 
                         </div>
-
 
                         <div
                             id="analysis-error"
@@ -380,7 +353,6 @@
                         >
 
                             <span>!</span>
-
 
                             <div>
 
@@ -395,7 +367,6 @@
                             </div>
 
                         </div>
-
 
                         <div
                             id="detection-result"
@@ -417,20 +388,15 @@
 
                                 </div>
 
-
                                 <strong id="confidence-text">
                                     0% confidence
                                 </strong>
 
                             </div>
 
-
                             <div class="confidence-bar">
-
                                 <span id="confidence-bar-fill"></span>
-
                             </div>
-
 
                             <div class="probability-grid">
 
@@ -446,7 +412,6 @@
 
                                 </div>
 
-
                                 <div>
 
                                     <span>
@@ -461,15 +426,13 @@
 
                             </div>
 
-
                             <p class="result-warning">
-                                This result is produced by a
-                                pretrained model and should not
+                                This result is produced by our
+                                trained EfficientNetB0 model and should not
                                 be treated as forensic proof.
                             </p>
 
                         </div>
-
 
                         <button
                             type="button"
@@ -480,7 +443,6 @@
                             Analyse Image
                         </button>
 
-
                         <button
                             type="button"
                             id="download-report-button"
@@ -489,7 +451,6 @@
                         >
                             View and Download Report
                         </button>
-
 
                         <button
                             type="button"
@@ -501,7 +462,6 @@
                         </button>
 
                     </div>
-
 
                     <div class="security-message">
 
@@ -517,35 +477,33 @@
 
         </section>
 
-
         <section class="statistics-section">
 
             <div class="statistics-container">
 
                 <div class="statistic">
-                    <strong>2</strong>
-                    <span>Detection categories</span>
+                    <strong>76.67%</strong>
+                    <span>Test accuracy</span>
                 </div>
 
                 <div class="statistic">
-                    <strong>3</strong>
-                    <span>Supported image formats</span>
+                    <strong>82.56%</strong>
+                    <span>Test precision</span>
                 </div>
 
                 <div class="statistic">
-                    <strong>8 MB</strong>
-                    <span>Maximum image size</span>
+                    <strong>74.35%</strong>
+                    <span>Test F1-score</span>
                 </div>
 
                 <div class="statistic">
-                    <strong>PDF</strong>
-                    <span>Downloadable report</span>
+                    <strong>87.09%</strong>
+                    <span>Test AUC</span>
                 </div>
 
             </div>
 
         </section>
-
 
         <section
             id="features"
@@ -570,7 +528,6 @@
 
             </div>
 
-
             <div class="features-grid">
 
                 <article class="feature-card">
@@ -583,7 +540,7 @@
 
                     <p>
                         Upload an image and check it using
-                        a pretrained image-classification model.
+                        our trained EfficientNetB0 classification model.
                     </p>
 
                     <span class="feature-link">
@@ -591,7 +548,6 @@
                     </span>
 
                 </article>
-
 
                 <article class="feature-card">
 
@@ -612,7 +568,6 @@
 
                 </article>
 
-
                 <article class="feature-card">
 
                     <span class="feature-icon">
@@ -631,7 +586,6 @@
                     </span>
 
                 </article>
-
 
                 <article class="feature-card">
 
@@ -652,7 +606,6 @@
 
                 </article>
 
-
                 <article class="feature-card">
 
                     <span class="feature-icon">
@@ -671,7 +624,6 @@
                     </span>
 
                 </article>
-
 
                 <article class="feature-card">
 
@@ -696,7 +648,6 @@
 
         </section>
 
-
         <section
             id="how-it-works"
             class="how-section"
@@ -717,7 +668,6 @@
 
             </div>
 
-
             <div class="steps-grid">
 
                 <article class="step-card">
@@ -735,7 +685,6 @@
 
                 </article>
 
-
                 <article class="step-card">
 
                     <span class="step-number">
@@ -751,7 +700,6 @@
 
                 </article>
 
-
                 <article class="step-card">
 
                     <span class="step-number">
@@ -761,12 +709,11 @@
                     <h3>Analyse face</h3>
 
                     <p>
-                        The face is detected and processed
-                        using the pretrained model.
+                        The face is validated and the full image is
+                        processed using our trained EfficientNetB0 model.
                     </p>
 
                 </article>
-
 
                 <article class="step-card">
 
@@ -786,7 +733,6 @@
             </div>
 
         </section>
-
 
         <section
             id="history"
@@ -812,7 +758,6 @@
 
                     </div>
 
-
                     <button
                         type="button"
                         id="clear-history-button"
@@ -822,7 +767,6 @@
                     </button>
 
                 </div>
-
 
                 <div id="history-list">
 
@@ -845,7 +789,6 @@
 
         </section>
 
-
         <section class="privacy-section">
 
             <div>
@@ -859,15 +802,18 @@
                 </h2>
 
                 <p>
-                    Detect Now uses a pretrained model to
-                    provide an experimental prediction.
+                    Detect Now uses an EfficientNetB0 model trained
+                    and fine-tuned with balanced real and fake frames
+                    from the public DFDC Part 34 dataset. The model
+                    achieved 76.67% accuracy and 87.09% AUC on our
+                    separate testing set. It provides an experimental
+                    prediction rather than a forensic conclusion.
                     Results may be affected by image quality,
                     compression, lighting and unfamiliar
                     manipulation techniques.
                 </p>
 
             </div>
-
 
             <a
                 href="about.html"
@@ -879,7 +825,6 @@
         </section>
 
     </main>
-
 
     <footer>
 
@@ -897,11 +842,9 @@
 
             </a>
 
-
             <p>
                 Deepfake Detection Academic Prototype
             </p>
-
 
             <p>
                 Group 20 · Charles Darwin University
@@ -910,7 +853,6 @@
         </div>
 
     </footer>
-
 
     <script src="static/app.js"></script>
 

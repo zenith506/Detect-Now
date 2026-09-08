@@ -1,9 +1,6 @@
 Flask
 flask-cors
-torch
-torchvision
-transformers
-Pillow
-safetensors
+tensorflow
 numpy<2.3
 opencv-python==4.12.0.88
+Pillow

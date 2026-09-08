@@ -40,7 +40,6 @@
 
             </a>
 
-
             <div class="nav-links">
 
                 <a href="index.html">
@@ -68,7 +67,6 @@
 
             </div>
 
-
             <a
                 href="index.html#detector"
                 class="nav-button"
@@ -79,7 +77,6 @@
         </div>
 
     </nav>
-
 
     <main>
 
@@ -106,7 +103,6 @@
 
         </section>
 
-
         <section class="about-section">
 
             <div class="about-introduction">
@@ -123,23 +119,23 @@
 
                 </div>
 
-
                 <div class="about-description">
 
                     <p>
                         Deepfake technology can create or modify
-                        digital media so that fake content appears
-                        realistic. This can make it difficult for
-                        normal users to identify whether an image
-                        or video is genuine.
+                        digital media so that manipulated content
+                        appears realistic. This makes it difficult
+                        for normal users to determine whether an
+                        image or video is genuine.
                     </p>
 
                     <p>
                         Our project focuses on developing a simple
                         tool that can support users when checking
                         suspicious digital media. The current
-                        prototype uses a pretrained deep-learning
-                        model to analyse facial images.
+                        prototype uses an EfficientNetB0 model
+                        trained and fine-tuned using real and
+                        manipulated facial frames.
                     </p>
 
                 </div>
@@ -147,7 +143,6 @@
             </div>
 
         </section>
-
 
         <section class="mission-section">
 
@@ -166,11 +161,10 @@
                     <p>
                         To develop a practical and user-friendly
                         tool that can help identify possible
-                        deepfake content.
+                        deepfake content using deep learning.
                     </p>
 
                 </article>
-
 
                 <article class="mission-card">
 
@@ -183,13 +177,13 @@
                     </h3>
 
                     <p>
-                        We combine a simple web interface,
-                        face detection and a pretrained
-                        image-classification model.
+                        We combine a web interface, image
+                        preprocessing, human-face validation and
+                        a trained EfficientNetB0 classification
+                        model.
                     </p>
 
                 </article>
-
 
                 <article class="mission-card">
 
@@ -203,8 +197,9 @@
 
                     <p>
                         We are beginning with facial-image
-                        detection and plan to add video
-                        detection in a later stage.
+                        detection. Video frame extraction and
+                        video detection will be added during
+                        the next development stage.
                     </p>
 
                 </article>
@@ -212,7 +207,6 @@
             </div>
 
         </section>
-
 
         <section class="technology-section">
 
@@ -230,21 +224,21 @@
 
                     <p>
                         When a user uploads an image, Detect Now
-                        first checks whether the file contains a
-                        clear human face. If a face is detected,
-                        the image is prepared and sent to a
-                        pretrained model.
+                        checks whether it contains a visible human
+                        face. The full image is then resized to
+                        224 by 224 pixels and prepared for the
+                        detection model.
                     </p>
 
                     <p>
-                        The model returns a prediction showing
-                        whether the face is likely real, likely
-                        deepfake or uncertain. It also provides
-                        confidence and probability values.
+                        Our trained EfficientNetB0 model processes
+                        the image and returns a binary prediction:
+                        Real or Deepfake. The interface also
+                        displays the confidence score and the
+                        probability for each category.
                     </p>
 
                 </div>
-
 
                 <div class="technology-list">
 
@@ -258,35 +252,32 @@
 
                     </div>
 
-
                     <div>
 
                         <span>2</span>
 
                         <p>
-                            Find and crop the human face
+                            Check for a visible human face
                         </p>
 
                     </div>
-
 
                     <div>
 
                         <span>3</span>
 
                         <p>
-                            Process it using the pretrained model
+                            Resize and process the complete image
                         </p>
 
                     </div>
-
 
                     <div>
 
                         <span>4</span>
 
                         <p>
-                            Display the prediction and confidence
+                            Display Real or Deepfake prediction
                         </p>
 
                     </div>
@@ -297,6 +288,249 @@
 
         </section>
 
+        <section class="about-section">
+
+            <div class="about-introduction">
+
+                <div>
+
+                    <span class="section-label">
+                        DATASET AND TRAINING
+                    </span>
+
+                    <h2>
+                        How we developed the model
+                    </h2>
+
+                </div>
+
+                <div class="about-description">
+
+                    <p>
+                        We used the publicly available DFDC
+                        Part 34 dataset. The original dataset
+                        contained 416 real videos and 2,242
+                        fake videos. To reduce class imbalance,
+                        we selected one matching fake video for
+                        each real video.
+                    </p>
+
+                    <p>
+                        This produced 416 real and 416 fake video
+                        groups. Ten frames from each selected
+                        video were used where available. The
+                        final prepared dataset contained 5,820
+                        training images, 1,240 validation images
+                        and 1,260 testing images.
+                    </p>
+
+                    <p>
+                        The video groups were separated before
+                        creating the image lists. This helped
+                        prevent frames from the same video pair
+                        appearing in both training and testing
+                        data.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="mission-section">
+
+            <div class="section-heading">
+
+                <span class="section-label">
+                    MODEL PERFORMANCE
+                </span>
+
+                <h2>
+                    Testing results
+                </h2>
+
+                <p>
+                    The final EfficientNetB0 model was evaluated
+                    using a separate balanced testing set of
+                    1,260 images.
+                </p>
+
+            </div>
+
+            <div class="mission-grid">
+
+                <article class="mission-card">
+
+                    <span class="mission-number">
+                        76.67%
+                    </span>
+
+                    <h3>
+                        Accuracy
+                    </h3>
+
+                    <p>
+                        The percentage of all testing images
+                        classified correctly.
+                    </p>
+
+                </article>
+
+                <article class="mission-card">
+
+                    <span class="mission-number">
+                        82.56%
+                    </span>
+
+                    <h3>
+                        Precision
+                    </h3>
+
+                    <p>
+                        The percentage of predicted deepfakes
+                        that were labelled fake in the testing
+                        dataset.
+                    </p>
+
+                </article>
+
+                <article class="mission-card">
+
+                    <span class="mission-number">
+                        67.62%
+                    </span>
+
+                    <h3>
+                        Recall
+                    </h3>
+
+                    <p>
+                        The percentage of labelled deepfakes
+                        detected successfully by the model.
+                    </p>
+
+                </article>
+
+                <article class="mission-card">
+
+                    <span class="mission-number">
+                        74.35%
+                    </span>
+
+                    <h3>
+                        F1-score
+                    </h3>
+
+                    <p>
+                        The combined balance between model
+                        precision and recall.
+                    </p>
+
+                </article>
+
+                <article class="mission-card">
+
+                    <span class="mission-number">
+                        87.09%
+                    </span>
+
+                    <h3>
+                        AUC
+                    </h3>
+
+                    <p>
+                        The model's ability to separate Real
+                        and Deepfake samples across different
+                        decision thresholds.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+        <section class="technology-section">
+
+            <div class="technology-content">
+
+                <div class="technology-text">
+
+                    <span class="section-label">
+                        MODEL DEVELOPMENT
+                    </span>
+
+                    <h2>
+                        EfficientNetB0 transfer learning
+                    </h2>
+
+                    <p>
+                        We started with EfficientNetB0 using
+                        ImageNet weights. During the first
+                        training stage, the EfficientNetB0 base
+                        was frozen and only the classification
+                        layer was trained.
+                    </p>
+
+                    <p>
+                        During the second stage, the final
+                        EfficientNetB0 layers were unfrozen and
+                        fine-tuned using a smaller learning rate.
+                        Model checkpoints, early stopping and
+                        learning-rate reduction were used during
+                        training.
+                    </p>
+
+                </div>
+
+                <div class="technology-list">
+
+                    <div>
+
+                        <span>1</span>
+
+                        <p>
+                            Balanced DFDC video pairs
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        <span>2</span>
+
+                        <p>
+                            224 by 224 RGB image input
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        <span>3</span>
+
+                        <p>
+                            EfficientNetB0 with ImageNet weights
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        <span>4</span>
+
+                        <p>
+                            Binary Real or Deepfake output
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
 
         <section class="team-section">
 
@@ -312,11 +546,11 @@
 
                 <p>
                     Our team members work on different parts
-                    of the research and prototype development.
+                    of the research, dataset, model and tool
+                    development.
                 </p>
 
             </div>
-
 
             <div class="team-grid">
 
@@ -342,7 +576,6 @@
 
                 </article>
 
-
                 <article class="team-card">
 
                     <span class="team-avatar">
@@ -359,12 +592,11 @@
 
                     <p>
                         Works on investigating datasets and
-                        preparing suitable data for development
-                        and testing.
+                        preparing suitable data for model
+                        development, validation and testing.
                     </p>
 
                 </article>
-
 
                 <article class="team-card">
 
@@ -381,12 +613,12 @@
                     </p>
 
                     <p>
-                        Works on selecting, configuring and
-                        evaluating deepfake-detection models.
+                        Works on selecting, training, fine-tuning
+                        and evaluating the deepfake-detection
+                        model.
                     </p>
 
                 </article>
-
 
                 <article class="team-card">
 
@@ -403,9 +635,9 @@
                     </p>
 
                     <p>
-                        Works on the user interface, backend and
-                        integration between the website and
-                        detection model.
+                        Works on the user interface, Flask
+                        backend and integration between the
+                        website and the trained model.
                     </p>
 
                 </article>
@@ -413,7 +645,6 @@
             </div>
 
         </section>
-
 
         <section class="supervisor-section">
 
@@ -434,7 +665,6 @@
                 </p>
 
             </div>
-
 
             <div class="supervisor-card">
 
@@ -458,7 +688,6 @@
 
         </section>
 
-
         <section class="limitations-section">
 
             <div class="limitations-content">
@@ -472,12 +701,21 @@
                 </h2>
 
                 <p>
-                    Deepfake detection is difficult and no model
-                    is completely accurate. Results may be
-                    affected by image quality, lighting,
+                    The model achieved 76.67% accuracy on our
+                    testing dataset, which means it can still
+                    produce incorrect results. Performance may
+                    be affected by image quality, lighting,
                     compression, face position and manipulation
                     methods that were not included in the
-                    model's training data.
+                    training dataset.
+                </p>
+
+                <p>
+                    The DFDC dataset mainly contains facial
+                    manipulations taken from videos. Fully
+                    AI-generated images or new manipulation
+                    methods may be more difficult for the model
+                    to classify correctly.
                 </p>
 
                 <p>
@@ -485,7 +723,6 @@
                     should not be used as the only evidence
                     when making important decisions.
                 </p>
-
 
                 <a
                     href="index.html#detector"
@@ -499,7 +736,6 @@
         </section>
 
     </main>
-
 
     <footer>
 
@@ -520,11 +756,9 @@
 
             </a>
 
-
             <p>
                 Deepfake Detection Academic Prototype
             </p>
-
 
             <p>
                 Group 20 · Charles Darwin University
