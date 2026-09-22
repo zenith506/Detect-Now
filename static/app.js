@@ -1,7 +1,7 @@
 const API_URL =
     window.location.protocol.startsWith("http")
         ? `${window.location.protocol}//${window.location.hostname}:5000/predict`
-        : "http://127.0.0.1:5000/predict";
+        : "https://detect-now-backend.onrender.com/predict";
 
 const mediaSelection =
     document.getElementById("media-selection");
