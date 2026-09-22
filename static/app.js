@@ -1,7 +1,10 @@
-const API_URL =
-    window.location.protocol.startsWith("http")
-        ? `${window.location.protocol}//${window.location.hostname}:5000/predict`
-        : "https://detect-now-backend.onrender.com/predict";
+const isLocalDevelopment =
+    window.location.hostname === "127.0.0.1" ||
+    window.location.hostname === "localhost";
+
+const API_URL = isLocalDevelopment
+    ? "http://127.0.0.1:5000/predict"
+    : "https://detect-now-backend.onrender.com/predict";
 
 const mediaSelection =
     document.getElementById("media-selection");
