@@ -1,6 +1,7 @@
 Flask
 flask-cors
+gunicorn
 tensorflow
 numpy<2.3
-opencv-python==4.12.0.88
+opencv-python-headless==4.12.0.88
 Pillow
