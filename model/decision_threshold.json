@@ -1,0 +1,8 @@
+{
+  "fake_threshold": 0.5,
+  "validation_f1": 0.6822,
+  "label_order": [
+    "real",
+    "fake"
+  ]
+}

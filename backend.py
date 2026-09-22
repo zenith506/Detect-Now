@@ -1,3 +1,4 @@
+import json
 import os
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
@@ -31,11 +32,30 @@ BASE_FOLDER = os.path.dirname(
 MODEL_PATH = os.path.join(
     BASE_FOLDER,
     "model",
-    "detect_now_efficientnetb0.keras",
+    "detect_now_efficientnetb0_improved.keras",
 )
+
+THRESHOLD_PATH = os.path.join(
+    BASE_FOLDER,
+    "model",
+    "decision_threshold.json",
+)
+
+DEFAULT_FAKE_THRESHOLD = 0.26
 
 MODEL_NAME = "Detect Now EfficientNetB0"
 MODEL_INPUT_SIZE = (224, 224)
+
+YUNET_MODEL_PATH = os.path.join(
+    BASE_FOLDER,
+    "model",
+    "face_detection_yunet_2023mar.onnx",
+)
+
+YUNET_SCORE_THRESHOLD = 0.88
+YUNET_NMS_THRESHOLD = 0.3
+YUNET_TOP_K = 5000
+YUNET_MAX_DETECTION_SIZE = 1280
 
 ALLOWED_EXTENSIONS = {
     "jpg",
@@ -46,20 +66,23 @@ ALLOWED_EXTENSIONS = {
 }
 
 model = None
+yunet_detector = None
 
-CASCADE_PATH = os.path.join(
-    cv2.data.haarcascades,
-    "haarcascade_frontalface_default.xml",
-)
 
-face_detector = cv2.CascadeClassifier(
-    CASCADE_PATH
-)
+def load_fake_threshold():
+    if not os.path.exists(THRESHOLD_PATH):
+        return DEFAULT_FAKE_THRESHOLD
 
-if face_detector.empty():
-    raise RuntimeError(
-        "OpenCV face detector could not be loaded."
-    )
+    try:
+        with open(THRESHOLD_PATH, "r", encoding="utf-8") as file:
+            threshold_data = json.load(file)
+        threshold = float(threshold_data.get(
+            "fake_threshold",
+            DEFAULT_FAKE_THRESHOLD,
+        ))
+        return float(np.clip(threshold, 0.05, 0.95))
+    except (OSError, ValueError, TypeError, json.JSONDecodeError):
+        return DEFAULT_FAKE_THRESHOLD
 
 
 def load_detection_model():
@@ -106,6 +129,36 @@ def allowed_file(filename):
     return extension in ALLOWED_EXTENSIONS
 
 
+def load_yunet_detector():
+    global yunet_detector
+
+    if yunet_detector is not None:
+        return yunet_detector
+
+    if not hasattr(cv2, "FaceDetectorYN"):
+        raise RuntimeError(
+            "This OpenCV installation does not include FaceDetectorYN. "
+            "Install or upgrade opencv-python."
+        )
+
+    if not os.path.exists(YUNET_MODEL_PATH):
+        raise FileNotFoundError(
+            "YuNet face detector model was not found. Expected: "
+            f"{YUNET_MODEL_PATH}"
+        )
+
+    yunet_detector = cv2.FaceDetectorYN.create(
+        YUNET_MODEL_PATH,
+        "",
+        (320, 320),
+        YUNET_SCORE_THRESHOLD,
+        YUNET_NMS_THRESHOLD,
+        YUNET_TOP_K,
+    )
+
+    return yunet_detector
+
+
 def read_uploaded_image(uploaded_file):
     image_bytes = uploaded_file.read()
 
@@ -139,39 +192,68 @@ def read_uploaded_image(uploaded_file):
 
 
 def detect_human_face(image):
-    image_array = np.asarray(image)
-
-    gray_image = cv2.cvtColor(
-        image_array,
-        cv2.COLOR_RGB2GRAY,
+    detector = load_yunet_detector()
+    rgb_image = np.asarray(image)
+    bgr_image = cv2.cvtColor(
+        rgb_image,
+        cv2.COLOR_RGB2BGR,
     )
 
-    faces = face_detector.detectMultiScale(
-        gray_image,
-        scaleFactor=1.1,
-        minNeighbors=5,
-        minSize=(60, 60),
+    original_height, original_width = bgr_image.shape[:2]
+    longest_side = max(original_width, original_height)
+    scale = min(
+        1.0,
+        YUNET_MAX_DETECTION_SIZE / float(longest_side),
     )
 
-    if len(faces) == 0:
-        return 0, None
+    if scale < 1.0:
+        detection_width = max(1, int(original_width * scale))
+        detection_height = max(1, int(original_height * scale))
+        detection_image = cv2.resize(
+            bgr_image,
+            (detection_width, detection_height),
+            interpolation=cv2.INTER_AREA,
+        )
+    else:
+        detection_image = bgr_image
+        detection_height, detection_width = detection_image.shape[:2]
 
-    x, y, width, height = max(
+    detector.setInputSize((detection_width, detection_height))
+    _, faces = detector.detect(detection_image)
+
+    if faces is None or len(faces) == 0:
+        return 0, None, "none"
+
+    # Prefer the largest high-confidence face in group photographs.
+    selected_face = max(
         faces,
-        key=lambda face: face[2] * face[3],
+        key=lambda face: float(face[2] * face[3] * face[14]),
     )
+
+    inverse_scale = 1.0 / scale
+    x = int(round(float(selected_face[0]) * inverse_scale))
+    y = int(round(float(selected_face[1]) * inverse_scale))
+    width = int(round(float(selected_face[2]) * inverse_scale))
+    height = int(round(float(selected_face[3]) * inverse_scale))
+    face_score = float(selected_face[14])
+
+    x = max(0, min(x, original_width - 1))
+    y = max(0, min(y, original_height - 1))
+    width = max(1, min(width, original_width - x))
+    height = max(1, min(height, original_height - y))
 
     face_box = {
         "x": int(x),
         "y": int(y),
         "width": int(width),
         "height": int(height),
+        "score": round(face_score, 6),
     }
 
-    return len(faces), face_box
+    return len(faces), face_box, "yunet"
 
 
-def crop_face(image, face_box, margin=0.15):
+def crop_face(image, face_box, margin=0.35):
     if not face_box:
         return image
 
@@ -192,8 +274,25 @@ def crop_face(image, face_box, margin=0.15):
     return image.crop((crop_x1, crop_y1, crop_x2, crop_y2))
 
 
+def pad_to_square(image):
+    """Pad without stretching so a partial face at an edge is preserved."""
+    width, height = image.size
+    square_size = max(width, height)
+    padded_image = Image.new(
+        "RGB",
+        (square_size, square_size),
+        (0, 0, 0),
+    )
+    left = (square_size - width) // 2
+    top = (square_size - height) // 2
+    padded_image.paste(image, (left, top))
+    return padded_image
+
+
 def preprocess_image(image):
-    resized_image = image.resize(
+    squared_image = pad_to_square(image)
+
+    resized_image = squared_image.resize(
         MODEL_INPUT_SIZE,
         Image.Resampling.LANCZOS,
     )
@@ -211,6 +310,7 @@ def preprocess_image(image):
 
 def predict_image(image_batch):
     detection_model = load_detection_model()
+    fake_threshold = load_fake_threshold()
 
     if HAS_TF and detection_model != "fallback_model":
         output = detection_model.predict(
@@ -238,7 +338,7 @@ def predict_image(image_batch):
         1.0 - fake_probability
     )
 
-    if fake_probability >= 0.5:
+    if fake_probability >= fake_threshold:
         prediction = "DEEPFAKE"
         confidence = fake_probability
     else:
@@ -250,6 +350,7 @@ def predict_image(image_batch):
         "confidence": confidence,
         "real_probability": real_probability,
         "fake_probability": fake_probability,
+        "fake_threshold": fake_threshold,
     }
 
 
@@ -288,6 +389,7 @@ def home():
         "model": MODEL_NAME,
         "architecture": "EfficientNetB0",
         "framework": "TensorFlow",
+        "face_detector": "OpenCV YuNet",
         "supported_media": ["image"],
         "message": (
             "Detect Now backend is running."
@@ -310,6 +412,8 @@ def health():
         ),
         "architecture": "EfficientNetB0",
         "framework": "TensorFlow",
+        "face_detector": "OpenCV YuNet",
+        "face_detector_model": os.path.basename(YUNET_MODEL_PATH),
         "tensorflow_version": tf.__version__ if tf else "2.15.0",
     })
 
@@ -360,23 +464,26 @@ def predict():
             uploaded_file
         )
 
-        face_count, face_box = (
+        face_count, face_box, detection_method = (
             detect_human_face(
                 original_image
             )
         )
 
-        if face_count == 0:
+        # Never send a non-face image to the binary Real/Deepfake model.
+        # The model has no "not a face" class, so doing that could cause cars,
+        # animals or objects to be incorrectly labelled Real or Deepfake.
+        if face_box is None:
             return jsonify({
                 "success": False,
-                "error": (
-                    "No human face was detected."
-                ),
+                "error": "No human face was detected.",
                 "message": (
-                    "Unable to analyse: no clear "
-                    "human face was detected."
+                    "Please upload an image containing a visible "
+                    "frontal or side-profile human face."
                 ),
                 "face_detected": False,
+                "partial_face_mode": False,
+                "detection_method": "none",
                 "faces_detected": 0,
             }), 422
 
@@ -448,6 +555,10 @@ def predict():
             ),
             "real_score": real_percentage,
             "fake_score": fake_percentage,
+            "fake_threshold": round(
+                result["fake_threshold"] * 100,
+                2,
+            ),
             "scores": {
                 "real": round(
                     real_probability,
@@ -459,6 +570,12 @@ def predict():
                 ),
             },
             "face_detected": True,
+            "partial_face_mode": False,
+            "detection_method": detection_method,
+            "face_detection_confidence": round(
+                face_box["score"] * 100,
+                2,
+            ),
             "faces_detected": int(
                 face_count
             ),
@@ -481,17 +598,13 @@ def predict():
             "explanation": explanation,
             "summary": explanation,
             "performance": {
-                "accuracy": 76.67,
-                "precision": 82.56,
-                "recall": 67.62,
-                "f1_score": 74.35,
-                "auc": 87.09,
+                "validation_accuracy_at_0_5": 58.0,
+                "validation_auc": 64.78,
+                "validation_f1_at_selected_threshold": 68.22,
             },
             "warning": (
-                "This is an academic prototype. "
-                "The result may be incorrect and "
-                "should not be treated as "
-                "forensic proof."
+                "This is an academic prototype. The result may be "
+                "incorrect and should not be treated as forensic proof."
             ),
         }), 200
 

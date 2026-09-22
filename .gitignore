@@ -3,4 +3,6 @@ __pycache__/
 *.pyc
 .env
 model-cache/
-uploads/
+uploads/retrain_data/
+model/detect_now_efficientnetb0_head.keras
+retrain_data/
