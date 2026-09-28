@@ -223,19 +223,11 @@
                     </h2>
 
                     <p>
-                        When a user uploads an image, Detect Now
-                        checks whether it contains a visible human
-                        face. The full image is then resized to
-                        224 by 224 pixels and prepared for the
-                        detection model.
+                        When a user uploads an image, YuNet locates a visible human face. The backend crops around that face, pads the crop to a square and resizes it to 224 by 224 pixels.
                     </p>
 
                     <p>
-                        Our trained EfficientNetB0 model processes
-                        the image and returns a binary prediction:
-                        Real or Deepfake. The interface also
-                        displays the confidence score and the
-                        probability for each category.
+                        The trained EfficientNetB0 classifier processes the face crop and returns a Real or Deepfake verdict. The interface shows its deepfake score and decision threshold. Scores are not calibrated probabilities.
                     </p>
 
                 </div>
@@ -267,7 +259,7 @@
                         <span>3</span>
 
                         <p>
-                            Resize and process the complete image
+                            Crop and analyse the detected face
                         </p>
 
                     </div>
@@ -289,167 +281,66 @@
         </section>
 
         <section class="about-section">
-
-            <div class="about-introduction">
-
-                <div>
-
-                    <span class="section-label">
-                        DATASET AND TRAINING
-                    </span>
-
-                    <h2>
-                        How we developed the model
-                    </h2>
-
-                </div>
-
-                <div class="about-description">
-
-                    <p>
-                        We used the publicly available DFDC
-                        Part 34 dataset. The original dataset
-                        contained 416 real videos and 2,242
-                        fake videos. To reduce class imbalance,
-                        we selected one matching fake video for
-                        each real video.
-                    </p>
-
-                    <p>
-                        This produced 416 real and 416 fake video
-                        groups. Ten frames from each selected
-                        video were used where available. The
-                        final prepared dataset contained 5,820
-                        training images, 1,240 validation images
-                        and 1,260 testing images.
-                    </p>
-
-                    <p>
-                        The video groups were separated before
-                        creating the image lists. This helped
-                        prevent frames from the same video pair
-                        appearing in both training and testing
-                        data.
-                    </p>
-
-                </div>
-
+        <div class="about-introduction">
+            <div>
+                <span class="section-label">DATASET AND TRAINING</span>
+                <h2>How we developed the model</h2>
             </div>
-
-        </section>
+            <div class="about-description">
+                <p>The current face swap classifier was fine-tuned on
+                cropped real and face-swapped portraits. YuNet was used
+                to prepare 14,090 training faces and 1,939 validation faces.</p>
+                <p>The model uses EfficientNetB0 for image classification.
+                Face detection and classification are separate steps.</p>
+                <p>Results for other types of AI image edits need separate
+                evaluation. A face swap result does not establish performance
+                on every kind of manipulated image.</p>
+            </div>
+        </div>
+    </section>
 
         <section class="mission-section">
+        <div class="section-heading">
+            <span class="section-label">MODEL PERFORMANCE</span>
+            <h2>Internal face swap check</h2>
+            <p>Exploratory check on 1,894 images used when comparing models.
+            These figures are not an independent accuracy estimate.</p>
+        </div>
 
-            <div class="section-heading">
+        <div class="mission-grid">
+            <article class="mission-card">
+                <span class="mission-number">90.29%</span>
+                <h3>Overall correct</h3>
+                <p>1,710 of 1,894 face swap images were classified correctly.</p>
+            </article>
 
-                <span class="section-label">
-                    MODEL PERFORMANCE
-                </span>
+            <article class="mission-card">
+                <span class="mission-number">887 / 947</span>
+                <h3>Real images correct</h3>
+                <p>Real images labelled Real in this check.</p>
+            </article>
 
-                <h2>
-                    Testing results
-                </h2>
+            <article class="mission-card">
+                <span class="mission-number">823 / 947</span>
+                <h3>Face swaps detected</h3>
+                <p>Altered images labelled Deepfake in this check.</p>
+            </article>
 
-                <p>
-                    The final EfficientNetB0 model was evaluated
-                    using a separate balanced testing set of
-                    1,260 images.
-                </p>
+            <article class="mission-card">
+                <span class="mission-number">10 / 10</span>
+                <h3>Other portraits: real</h3>
+                <p>Real portraits labelled Real in a small separate
+                development check.</p>
+            </article>
 
-            </div>
-
-            <div class="mission-grid">
-
-                <article class="mission-card">
-
-                    <span class="mission-number">
-                        76.67%
-                    </span>
-
-                    <h3>
-                        Accuracy
-                    </h3>
-
-                    <p>
-                        The percentage of all testing images
-                        classified correctly.
-                    </p>
-
-                </article>
-
-                <article class="mission-card">
-
-                    <span class="mission-number">
-                        82.56%
-                    </span>
-
-                    <h3>
-                        Precision
-                    </h3>
-
-                    <p>
-                        The percentage of predicted deepfakes
-                        that were labelled fake in the testing
-                        dataset.
-                    </p>
-
-                </article>
-
-                <article class="mission-card">
-
-                    <span class="mission-number">
-                        67.62%
-                    </span>
-
-                    <h3>
-                        Recall
-                    </h3>
-
-                    <p>
-                        The percentage of labelled deepfakes
-                        detected successfully by the model.
-                    </p>
-
-                </article>
-
-                <article class="mission-card">
-
-                    <span class="mission-number">
-                        74.35%
-                    </span>
-
-                    <h3>
-                        F1-score
-                    </h3>
-
-                    <p>
-                        The combined balance between model
-                        precision and recall.
-                    </p>
-
-                </article>
-
-                <article class="mission-card">
-
-                    <span class="mission-number">
-                        87.09%
-                    </span>
-
-                    <h3>
-                        AUC
-                    </h3>
-
-                    <p>
-                        The model's ability to separate Real
-                        and Deepfake samples across different
-                        decision thresholds.
-                    </p>
-
-                </article>
-
-            </div>
-
-        </section>
+            <article class="mission-card">
+                <span class="mission-number">0 / 10</span>
+                <h3>Other portraits: edits</h3>
+                <p>Edited portraits detected in that check. This shows
+                a limitation outside the face swap dataset.</p>
+            </article>
+        </div>
+    </section>
 
         <section class="technology-section">
 
@@ -491,7 +382,7 @@
                         <span>1</span>
 
                         <p>
-                            Balanced DFDC video pairs
+                            YuNet cropped face images
                         </p>
 
                     </div>
@@ -712,50 +603,65 @@
         </section>
 
         <section class="limitations-section">
+        <div class="limitations-content">
+            <span class="section-label">IMPORTANT LIMITATIONS</span>
+            <h2>The result is guidance, not proof</h2>
+            <p>The internal face swap check does not measure performance
+            on new datasets. Portrait edits outside that dataset were
+            missed during our separate development check.</p>
+            <p>Image quality, compression, lighting, face position and
+            unfamiliar manipulation methods may affect results. The
+            deepfake score is not a calibrated probability.</p>
+            <p>Detect Now is an academic prototype and should not be
+            the only evidence for an important decision.</p>
+        </div>
+    </section>
 
-            <div class="limitations-content">
 
-                <span class="section-label">
-                    IMPORTANT LIMITATIONS
-                </span>
+        <section class="about-section" id="run-project">
+            <div class="about-introduction">
+                <div>
+                    <span class="section-label">RUN THE PROTOTYPE</span>
+                    <h2>How to run Detect Now</h2>
+                </div>
 
-                <h2>
-                    The result is guidance, not proof
-                </h2>
+                <div class="about-description">
+                    <p>These steps run the image detection prototype locally
+                    on Windows. Use the project folder containing
+                    <code>backend.py</code>, <code>requirements.txt</code>,
+                    <code>index.html</code> and <code>static/app.js</code>.</p>
 
-                <p>
-                    The model achieved 76.67% accuracy on our
-                    testing dataset, which means it can still
-                    produce incorrect results. Performance may
-                    be affected by image quality, lighting,
-                    compression, face position and manipulation
-                    methods that were not included in the
-                    training dataset.
-                </p>
+                    <p><strong>1. Check the model files.</strong> The
+                    <code>model</code> folder must contain:</p>
+                    <ul>
+                        <li><code>detect_now_efficientnetb0_faceswap_crops.keras</code></li>
+                        <li><code>decision_threshold_faceswap_crops.json</code></li>
+                        <li><code>face_detection_yunet_2023mar.onnx</code></li>
+                    </ul>
 
-                <p>
-                    The DFDC dataset mainly contains facial
-                    manipulations taken from videos. Fully
-                    AI-generated images or new manipulation
-                    methods may be more difficult for the model
-                    to classify correctly.
-                </p>
+                    <p><strong>2. Open the project folder in VS Code.</strong>
+                    In its terminal, create a Python environment and install
+                    the dependencies:</p>
+                    <pre style="white-space:pre-wrap;overflow-x:auto"><code>py -3.13 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt</code></pre>
 
-                <p>
-                    Detect Now is an academic prototype and
-                    should not be used as the only evidence
-                    when making important decisions.
-                </p>
+                    <p><strong>3. Start the backend</strong> in that terminal:</p>
+                    <pre style="white-space:pre-wrap;overflow-x:auto"><code>.\.venv\Scripts\python.exe backend.py</code></pre>
+                    <p>Keep it running at
+                    <code>http://127.0.0.1:5000</code>.</p>
 
-                <a
-                    href="index.html#detector"
-                    class="primary-button"
-                >
-                    Try Image Detection
-                </a>
+                    <p><strong>4. Start the website</strong> in a second
+                    terminal opened in the same project folder:</p>
+                    <pre style="white-space:pre-wrap;overflow-x:auto"><code>.\.venv\Scripts\python.exe -m http.server 5500 --bind 127.0.0.1</code></pre>
+                    <p>Open <code>http://127.0.0.1:5500</code> in a browser.
+                    Select an image containing a visible human face and
+                    choose Analyse.</p>
 
+                    <p>The result is an experimental model prediction.
+                    Face swap results do not establish accuracy for other
+                    forms of image editing.</p>
+                </div>
             </div>
-
         </section>
 
     </main>

@@ -443,8 +443,8 @@ function displayResult(result) {
         isReal ? "REAL" : "DEEPFAKE";
 
     confidenceText.textContent =
-        Number(result.confidence).toFixed(2) +
-        "% confidence";
+        Number(result.fake_probability).toFixed(2) +
+        "% deepfake score";
 
     realProbability.textContent =
         Number(result.real_probability).toFixed(2) +
@@ -459,7 +459,7 @@ function displayResult(result) {
             100,
             Math.max(
                 0,
-                Number(result.confidence)
+                Number(result.fake_probability)
             )
         ) + "%";
 
@@ -653,6 +653,38 @@ function createReportHTML(
         latestResult.model_name ||
         "Detect Now EfficientNetB0"
     );
+
+    const modelFile = String(latestResult.model_file || 'Unavailable in response');
+    const expectedModel = modelFile === 'detect_now_efficientnetb0_faceswap_crops.keras';
+    const fakeScore = Number(latestResult.fake_probability);
+    const fakeThreshold = Number(latestResult.fake_threshold);
+    const mismatch = Number.isFinite(fakeScore) && Number.isFinite(fakeThreshold) &&
+        (safePrediction === 'DEEPFAKE'
+            ? fakeScore < fakeThreshold
+            : fakeScore >= fakeThreshold);
+
+    const datasetDescription = expectedModel
+        ? 'Fine-tuned on face swaps; 14,090 YuNet-prepared training faces and 1,939 validation faces.'
+        : 'Training dataset details are unavailable for this backend model.';
+
+    const evaluationRows = expectedModel ? `
+        <div class="detail-row">
+            <span>Internal face swap check</span>
+            <strong>1,710 / 1,894 correct (90.29%)</strong>
+        </div>
+        <div class="detail-row">
+            <span>Real images correctly labelled</span>
+            <strong>887 / 947</strong>
+        </div>
+        <div class="detail-row">
+            <span>Face swaps detected</span>
+            <strong>823 / 947</strong>
+        </div>
+        <p>Exploratory check on images used when comparing models.
+        This is not an independent accuracy estimate and does not
+        measure detection of other AI edits.</p>
+    ` : '<p>No verified evaluation figures are available for this model.</p>';
+
 
     const analysisDate = new Date(
         latestResult.analysedAt
@@ -1140,15 +1172,13 @@ function createReportHTML(
                 </div>
 
                 <div class="summary-card">
-                    <span>CONFIDENCE</span>
+                    <span>DEEPFAKE SCORE</span>
 
                     <strong>
-                        ${Number(
-        latestResult.confidence
-    ).toFixed(2)}%
+                        ${fakeScore.toFixed(2)}%
                     </strong>
 
-                    <small>Model confidence</small>
+                    <small>Deepfake score</small>
                 </div>
 
             </div>
@@ -1225,13 +1255,16 @@ function createReportHTML(
                 </div>
 
                 <div class="detail-row">
-                    <span>Model confidence</span>
-
-                    <strong>
-                        ${Number(
-        latestResult.confidence
-    ).toFixed(2)}%
-                    </strong>
+                    <span>Deepfake score</span>
+                    <strong>${fakeScore.toFixed(2)}%</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Model file</span>
+                    <strong>${escapeHTML(modelFile)}</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Decision threshold</span>
+                    <strong>${Number.isFinite(fakeThreshold) ? fakeThreshold.toFixed(2) + '%' : 'Unavailable'}</strong>
                 </div>
 
                 <div class="detail-row">
@@ -1319,6 +1352,9 @@ function createReportHTML(
             <div class="notice">
 
                 <strong>Important:</strong>
+                ${mismatch
+                    ? 'Warning: verdict disagrees with score and threshold. Restart backend and analyse again.'
+                    : ''}
 
                 This report contains an experimental
                 prediction from our trained EfficientNetB0
@@ -1378,64 +1414,33 @@ function createReportHTML(
             </section>
 
             <section class="report-section">
-
                 <h2>Analysis Information</h2>
 
                 <div class="detail-row">
                     <span>Analysis method</span>
-
-                    <p>
-                        The system first confirmed that the
-                        image contained a visible human face.
-                        The complete image was resized to
-                        224 × 224 pixels and processed by our
-                        trained EfficientNetB0 model.
-                    </p>
+                    <p>YuNet locates the face. The backend crops around it,
+                    pads it to a square and resizes it to 224 ? 224 pixels
+                    for EfficientNetB0.</p>
                 </div>
 
                 <div class="detail-row">
-                    <span>Training dataset</span>
-
-                    <p>
-                        Balanced real and fake facial frames
-                        from the public DFDC Part 34 dataset.
-                    </p>
+                    <span>Training images</span>
+                    <p>${escapeHTML(datasetDescription)}</p>
                 </div>
 
                 <div class="detail-row">
                     <span>Training method</span>
-
-                    <p>
-                        Transfer learning with ImageNet weights,
-                        followed by EfficientNetB0 fine-tuning.
-                    </p>
+                    <p>Transfer learning and EfficientNetB0 fine-tuning.</p>
                 </div>
 
                 <div class="detail-row">
-                    <span>Test accuracy</span>
-                    <strong>76.67%</strong>
+                    <span>Score interpretation</span>
+                    <p>The deepfake score is a raw classifier output,
+                    not a calibrated probability. A score at or above
+                    the decision threshold produces the DEEPFAKE verdict.</p>
                 </div>
 
-                <div class="detail-row">
-                    <span>Test precision</span>
-                    <strong>82.56%</strong>
-                </div>
-
-                <div class="detail-row">
-                    <span>Test recall</span>
-                    <strong>67.62%</strong>
-                </div>
-
-                <div class="detail-row">
-                    <span>Test F1-score</span>
-                    <strong>74.35%</strong>
-                </div>
-
-                <div class="detail-row">
-                    <span>Test AUC</span>
-                    <strong>87.09%</strong>
-                </div>
-
+                ${evaluationRows}
             </section>
 
             <section class="report-section">
