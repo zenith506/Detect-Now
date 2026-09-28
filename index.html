@@ -322,7 +322,7 @@
                                 </div>
 
                                 <strong id="confidence-text">
-                                    0% confidence
+                                    0% deepfake score
                                 </strong>
 
                             </div>
@@ -400,23 +400,23 @@
             <div class="statistics-container">
 
                 <div class="statistic">
-                    <strong>76.67%</strong>
-                    <span>Test accuracy</span>
+                    <strong>90.29%</strong>
+                    <span>Internal face swap check</span>
                 </div>
 
                 <div class="statistic">
-                    <strong>82.56%</strong>
-                    <span>Test precision</span>
+                    <strong>887 / 947</strong>
+                    <span>Real images correctly labelled</span>
                 </div>
 
                 <div class="statistic">
-                    <strong>74.35%</strong>
-                    <span>Test F1-score</span>
+                    <strong>823 / 947</strong>
+                    <span>Face swaps detected</span>
                 </div>
 
                 <div class="statistic">
-                    <strong>87.09%</strong>
-                    <span>Test AUC</span>
+                    <strong>1,894</strong>
+                    <span>Face swap images checked</span>
                 </div>
 
             </div>
@@ -489,11 +489,10 @@
                         %
                     </span>
 
-                    <h3>Confidence Score</h3>
+                    <h3>Deepfake Score</h3>
 
                     <p>
-                        View the model confidence and compare
-                        real and deepfake probability values.
+                        View the model score and decision threshold. Scores are not calibrated probabilities.
                     </p>
 
                     <span class="feature-link">
@@ -621,8 +620,7 @@
                     <h3>Analyse face</h3>
 
                     <p>
-                        The face is validated and the full image is
-                        processed using our trained EfficientNetB0 model.
+                        YuNet finds the face; a face crop is analysed using our trained EfficientNetB0 model.
                     </p>
 
                 </article>
@@ -712,15 +710,13 @@
                 </h2>
 
                 <p>
-                    Detect Now uses an EfficientNetB0 model trained
-                    and fine-tuned with balanced real and fake frames
-                    from the public DFDC Part 34 dataset. The model
-                    achieved 76.67% accuracy and 87.09% AUC on our
-                    separate testing set. It provides an experimental
-                    prediction rather than a forensic conclusion.
-                    Results may be affected by image quality,
-                    compression, lighting and unfamiliar
-                    manipulation techniques.
+                    Detect Now uses a YuNet face detector and an EfficientNetB0
+                    classifier trained on cropped real and face-swapped portraits.
+                    In an internal check of 1,894 face swap images, 1,710 were
+                    classified correctly (90.29%). These images were used to
+                    compare models, so this is not an independent accuracy
+                    estimate. Other AI image edits may be missed. Scores are
+                    experimental and should not be treated as forensic proof.
                 </p>
 
             </div>
