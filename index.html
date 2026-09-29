@@ -1,764 +1,351 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Detect Now - Deepfake Detection</title>
-
-    <link rel="stylesheet" href="static/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detect Now - Deepfake Detection</title>
+<link rel="stylesheet" href="static/style.css">
 </head>
-
 <body>
 
-    <nav class="navbar">
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="#home" class="logo">
+      <span class="logo-icon">D</span>
+      <span>Detect <strong>Now</strong></span>
+    </a>
+    <div class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#detector">Detector</a>
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#history">History</a>
+      <a href="about.html">About Us</a>
+    </div>
+    <a href="#detector" class="nav-button">Check an Image</a>
+  </div>
+</nav>
 
-        <div class="nav-container">
+<main id="home">
 
-            <a href="#home" class="logo">
-                <span class="logo-icon">D</span>
+<section class="hero-section">
+  <div class="hero-content">
+    <div class="hero-text">
+      <span class="hero-label">TRAINED DEEPFAKE DETECTION</span>
+      <h1>Identify manipulated media with <span>Detect Now.</span></h1>
+      <p>Upload a facial image and use our trained EfficientNetB0 model to check whether the content is likely to be real or deepfake.</p>
+      <div class="hero-buttons">
+        <a href="#detector" class="primary-button">Start Detection</a>
+        <a href="#how-it-works" class="secondary-button">How It Works</a>
+      </div>
+      <div class="hero-points">
+        <span>✓ Simple upload</span>
+        <span>✓ Human-face validation</span>
+        <span>✓ Downloadable report</span>
+      </div>
+    </div>
 
-                <span>
-                    Detect <strong>Now</strong>
-                </span>
-            </a>
+    <div id="detector" class="detector-card">
+      <div class="card-heading">
+        <div>
+          <span class="section-label">MEDIA ANALYSIS</span>
+          <h2>Check your media</h2>
+        </div>
+        <span class="status-badge">Model Online</span>
+      </div>
 
-            <div class="nav-links">
-                <a href="#home">Home</a>
-                <a href="#detector">Detector</a>
-                <a href="#features">Features</a>
-                <a href="#how-it-works">How It Works</a>
-                <a href="#history">History</a>
-                <a href="about.html">About Us</a>
-            </div>
+      <p class="card-description">Select the type of media you want to analyse.</p>
 
-            <a href="#detector" class="nav-button">
-                Check an Image
-            </a>
+      <div id="media-selection" class="media-selection">
+        <button type="button" id="select-image-button" class="media-button">
+          <span class="media-icon image-icon">▧</span>
+          <span class="media-details">
+            <strong>Image Detection</strong>
+            <small>JPG, JPEG, PNG, WEBP or BMP files</small>
+          </span>
+          <span class="media-arrow">→</span>
+        </button>
 
+        <button type="button" id="select-video-button" class="media-button">
+          <span class="media-icon video-icon">▶</span>
+          <span class="media-details">
+            <strong>Video Detection</strong>
+            <small>Planned for the next stage</small>
+          </span>
+          <span class="media-arrow">→</span>
+        </button>
+      </div>
+
+      <div id="upload-area" class="upload-area" hidden>
+        <button type="button" id="back-button" class="back-button">← Change media type</button>
+
+        <div class="selected-type-heading">
+          <span id="selected-type-icon" class="selected-type-icon">▧</span>
+          <div>
+            <h3 id="upload-heading">Upload Image</h3>
+            <p id="upload-description">Select an image from your device.</p>
+          </div>
         </div>
 
-    </nav>
-
-    <main id="home">
-
-        <section class="hero-section">
-
-            <div class="hero-content">
-
-                <div class="hero-text">
-
-                    <span class="hero-label">
-                        TRAINED DEEPFAKE DETECTION
-                    </span>
-
-                    <h1>
-                        Identify manipulated media with
-                        <span>Detect Now.</span>
-                    </h1>
-
-                    <p>
-                        Upload a facial image and use our trained
-                        EfficientNetB0 model to check whether the
-                        content is likely to be real or deepfake.
-                    </p>
-
-                    <div class="hero-buttons">
-
-                        <a href="#detector" class="primary-button">
-                            Start Detection
-                        </a>
-
-                        <a href="#how-it-works" class="secondary-button">
-                            How It Works
-                        </a>
-
-                    </div>
-
-                    <div class="hero-points">
-                        <span>✓ Simple upload</span>
-                        <span>✓ Human-face validation</span>
-                        <span>✓ Downloadable report</span>
-                    </div>
-
-                </div>
-
-                <div id="detector" class="detector-card">
-
-                    <div class="card-heading">
-
-                        <div>
-                            <span class="section-label">
-                                MEDIA ANALYSIS
-                            </span>
-
-                            <h2>Check your media</h2>
-                        </div>
-
-                        <span class="status-badge">
-                            Model Online
-                        </span>
-
-                    </div>
-
-                    <p class="card-description">
-                        Select the type of media you want to analyse.
-                    </p>
-
-                    <div id="media-selection" class="media-selection">
-
-                        <button type="button" id="select-image-button" class="media-button">
-
-                            <span class="media-icon image-icon">
-                                ▧
-                            </span>
-
-                            <span class="media-details">
-
-                                <strong>
-                                    Image Detection
-                                </strong>
-
-                                <small>
-                                    JPG, JPEG and PNG files
-                                </small>
-
-                            </span>
-
-                            <span class="media-arrow">
-                                →
-                            </span>
-
-                        </button>
-
-                        <button type="button" id="select-video-button" class="media-button">
-
-                            <span class="media-icon video-icon">
-                                ▶
-                            </span>
-
-                            <span class="media-details">
-
-                                <strong>
-                                    Video Detection
-                                </strong>
-
-                                <small>
-                                    Planned for the next stage
-                                </small>
-
-                            </span>
-
-                            <span class="media-arrow">
-                                →
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                    <div id="upload-area" class="upload-area" hidden>
-
-                        <button type="button" id="back-button" class="back-button">
-                            ← Change media type
-                        </button>
-
-                        <div class="selected-type-heading">
-
-                            <span id="selected-type-icon" class="selected-type-icon">
-                                ▧
-                            </span>
-
-                            <div>
-
-                                <h3 id="upload-heading">
-                                    Upload Image
-                                </h3>
-
-                                <p id="upload-description">
-                                    Select an image from your device.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <label for="media-input" class="upload-box">
-
-                            <span class="upload-cloud">
-                                ↑
-                            </span>
-
-                            <strong id="upload-text">
-                                Choose an image
-                            </strong>
-
-                            <span>
-                                Click to browse your device
-                            </span>
-
-                            <small id="file-information">
-                                JPG, JPEG or PNG · Maximum 8 MB
-                            </small>
-
-                            <input type="file" id="media-input">
-
-                        </label>
-
-                        <div id="image-preview-section" class="preview-section" hidden>
-
-                            <img id="image-preview" alt="Selected image">
-
-                            <div class="preview-information">
-
-                                <strong id="image-file-name"></strong>
-
-                                <span>
-                                    Image ready for analysis
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                        <div id="video-preview-section" class="preview-section" hidden>
-
-                            <video id="video-preview" controls></video>
-
-                            <div class="preview-information">
-
-                                <strong id="video-file-name"></strong>
-
-                                <span>
-                                    Video selected
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                        <div id="video-notice" class="analysis-error" hidden>
-
-                            <span>i</span>
-
-                            <div>
-
-                                <h3>
-                                    Video Detection Coming Soon
-                                </h3>
-
-                                <p>
-                                    Video detection will be added
-                                    during the next development stage.
-                                    Image detection is currently available.
-                                </p>
-
-                                <button type="button" id="switch-to-image-button" class="secondary-button"
-                                    style="margin-top: 12px; padding: 6px 14px; font-size: 12px;">
-                                    Switch to Image Detection
-                                </button>
-                                <button type="button" id="analyze-video-button" class="primary-button"
-                                    style="margin-top: 12px; padding: 6px 14px; font-size: 12px; margin-left: 6px;">
-                                    🎬 Extract Frames & Analyze Video
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                        <div id="analysis-loading" class="analysis-loading" hidden>
-
-                            <span class="loading-spinner"></span>
-
-                            <div>
-
-                                <h3>
-                                    Analysing Image
-                                </h3>
-
-                                <p>
-                                    The trained EfficientNetB0 model is checking
-                                    the selected image. Please wait.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <div id="analysis-error" class="analysis-error" hidden>
-
-                            <span>!</span>
-
-                            <div>
-
-                                <h3>
-                                    Analysis Failed
-                                </h3>
-
-                                <p id="analysis-error-text">
-                                    The image could not be analysed.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <div id="detection-result" class="detection-result" hidden>
-
-                            <div class="result-heading">
-
-                                <div>
-
-                                    <span class="result-label">
-                                        DETECTION RESULT
-                                    </span>
-
-                                    <h3 id="prediction-text">
-                                        Likely Real
-                                    </h3>
-
-                                </div>
-
-                                <strong id="confidence-text">
-                                    0% deepfake score
-                                </strong>
-
-                            </div>
-
-                            <div class="confidence-bar">
-                                <span id="confidence-bar-fill"></span>
-                            </div>
-
-                            <div class="probability-grid">
-
-                                <div>
-
-                                    <span>
-                                        Real probability
-                                    </span>
-
-                                    <strong id="real-probability">
-                                        0%
-                                    </strong>
-
-                                </div>
-
-                                <div>
-
-                                    <span>
-                                        Deepfake probability
-                                    </span>
-
-                                    <strong id="fake-probability">
-                                        0%
-                                    </strong>
-
-                                </div>
-
-                            </div>
-
-                            <p class="result-warning">
-                                This result is produced by our
-                                trained EfficientNetB0 model and should not
-                                be treated as forensic proof.
-                            </p>
-
-                        </div>
-
-                        <button type="button" id="analyse-button" class="full-button" hidden>
-                            Analyse Image
-                        </button>
-
-                        <button type="button" id="download-report-button" class="report-button" hidden>
-                            View and Download Report
-                        </button>
-
-                        <button type="button" id="upload-again-button" class="full-button" hidden>
-                            Upload Another File
-                        </button>
-
-                    </div>
-
-                    <div class="security-message">
-
-                        <span>●</span>
-
-                        A clear human face is required for analysis.
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <section class="statistics-section">
-
-            <div class="statistics-container">
-
-                <div class="statistic">
-                    <strong>90.29%</strong>
-                    <span>Internal face swap check</span>
-                </div>
-
-                <div class="statistic">
-                    <strong>887 / 947</strong>
-                    <span>Real images correctly labelled</span>
-                </div>
-
-                <div class="statistic">
-                    <strong>823 / 947</strong>
-                    <span>Face swaps detected</span>
-                </div>
-
-                <div class="statistic">
-                    <strong>1,894</strong>
-                    <span>Face swap images checked</span>
-                </div>
-
-            </div>
-
-        </section>
-
-        <section id="features" class="content-section">
-
-            <div class="section-heading">
-
-                <span class="section-label">
-                    PROTOTYPE FEATURES
-                </span>
-
-                <h2>
-                    Simple tools for checking digital media
-                </h2>
-
-                <p>
-                    Detect Now provides an easy interface
-                    for uploading facial images and understanding
-                    model predictions.
-                </p>
-
-            </div>
-
-            <div class="features-grid">
-
-                <article class="feature-card">
-
-                    <span class="feature-icon">
-                        ◎
-                    </span>
-
-                    <h3>Image Analysis</h3>
-
-                    <p>
-                        Upload an image and check it using
-                        our trained EfficientNetB0 classification model.
-                    </p>
-
-                    <span class="feature-link">
-                        Available now
-                    </span>
-
-                </article>
-
-                <article class="feature-card">
-
-                    <span class="feature-icon">
-                        ◉
-                    </span>
-
-                    <h3>Face Detection</h3>
-
-                    <p>
-                        Confirm that the uploaded image contains
-                        a clear human face before analysis.
-                    </p>
-
-                    <span class="feature-link">
-                        Available now
-                    </span>
-
-                </article>
-
-                <article class="feature-card">
-
-                    <span class="feature-icon">
-                        %
-                    </span>
-
-                    <h3>Deepfake Score</h3>
-
-                    <p>
-                        View the model score and decision threshold. Scores are not calibrated probabilities.
-                    </p>
-
-                    <span class="feature-link">
-                        Included in results
-                    </span>
-
-                </article>
-
-                <article class="feature-card">
-
-                    <span class="feature-icon">
-                        ▤
-                    </span>
-
-                    <h3>Detection Report</h3>
-
-                    <p>
-                        View file details, prediction values,
-                        model information and image preview.
-                    </p>
-
-                    <span class="feature-link">
-                        Available after analysis
-                    </span>
-
-                </article>
-
-                <article class="feature-card">
-
-                    <span class="feature-icon">
-                        ◷
-                    </span>
-
-                    <h3>Upload History</h3>
-
-                    <p>
-                        Review the file name, size and date
-                        of recently selected images.
-                    </p>
-
-                    <span class="feature-link">
-                        Available now
-                    </span>
-
-                </article>
-
-                <article class="feature-card">
-
-                    <span class="feature-icon">
-                        ▶
-                    </span>
-
-                    <h3>Video Detection</h3>
-
-                    <p>
-                        Video frame extraction and detection
-                        will be added in the next project stage.
-                    </p>
-
-                    <span class="feature-link">
-                        Next development stage
-                    </span>
-
-                </article>
-
-            </div>
-
-        </section>
-
-        <section id="how-it-works" class="how-section">
-
-            <div class="section-heading">
-
-                <span class="section-label">
-                    SIMPLE PROCESS
-                </span>
-
-                <h2>How Detect Now works</h2>
-
-                <p>
-                    The current image-detection process
-                    follows four simple stages.
-                </p>
-
-            </div>
-
-            <div class="steps-grid">
-
-                <article class="step-card">
-
-                    <span class="step-number">
-                        01
-                    </span>
-
-                    <h3>Select image</h3>
-
-                    <p>
-                        Choose image detection from
-                        the media selection area.
-                    </p>
-
-                </article>
-
-                <article class="step-card">
-
-                    <span class="step-number">
-                        02
-                    </span>
-
-                    <h3>Upload file</h3>
-
-                    <p>
-                        Select a supported JPG, JPEG
-                        or PNG facial image.
-                    </p>
-
-                </article>
-
-                <article class="step-card">
-
-                    <span class="step-number">
-                        03
-                    </span>
-
-                    <h3>Analyse face</h3>
-
-                    <p>
-                        YuNet finds the face; a face crop is analysed using our trained EfficientNetB0 model.
-                    </p>
-
-                </article>
-
-                <article class="step-card">
-
-                    <span class="step-number">
-                        04
-                    </span>
-
-                    <h3>Download report</h3>
-
-                    <p>
-                        View the prediction and save
-                        the detailed result as a PDF.
-                    </p>
-
-                </article>
-
-            </div>
-
-        </section>
-
-        <section id="history" class="content-section history-section">
-
-            <div class="history-card">
-
-                <div class="history-heading">
-
-                    <div>
-
-                        <span class="section-label">
-                            RECENT ACTIVITY
-                        </span>
-
-                        <h2>Upload History</h2>
-
-                        <p>
-                            Files selected on this browser
-                            will appear below.
-                        </p>
-
-                    </div>
-
-                    <div style="display: flex; gap: 10px;">
-                        <button type="button" id="export-csv-button" class="outline-button">
-                            Export CSV
-                        </button>
-                        <button type="button" id="clear-history-button" class="outline-button">
-                            Clear History
-                        </button>
-                    </div>
-
-                </div>
-
-                <div id="history-list">
-
-                    <div class="empty-history-message">
-
-                        <span>◷</span>
-
-                        <h3>No upload history</h3>
-
-                        <p>
-                            Your recently selected files
-                            will appear here.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <section class="privacy-section">
-
+        <label for="media-input" class="upload-box">
+          <span class="upload-cloud">↑</span>
+          <strong id="upload-text">Choose an image</strong>
+          <span>Click to browse your device</span>
+          <small id="file-information">JPG, JPEG, PNG, WEBP or BMP · Maximum 10 MB</small>
+          <input type="file" id="media-input">
+        </label>
+
+        <div id="image-preview-section" class="preview-section" hidden>
+          <img id="image-preview" alt="Selected image">
+          <div class="preview-information">
+            <strong id="image-file-name"></strong>
+            <span>Image ready for analysis</span>
+          </div>
+        </div>
+
+        <div id="video-preview-section" class="preview-section" hidden>
+          <video id="video-preview" controls></video>
+          <div class="preview-information">
+            <strong id="video-file-name"></strong>
+            <span>Video selected</span>
+          </div>
+        </div>
+
+        <div id="video-notice" class="analysis-error" hidden>
+          <span>i</span>
+          <div>
+            <h3>Video Detection Coming Soon</h3>
+            <p>Video detection will be added during the next development stage. Image detection is currently available.</p>
+            <button type="button" id="switch-to-image-button" class="secondary-button"
+              style="margin-top: 12px; padding: 6px 14px; font-size: 12px;">
+              Switch to Image Detection
+            </button>
+          </div>
+        </div>
+
+        <div id="analysis-loading" class="analysis-loading" hidden>
+          <span class="loading-spinner"></span>
+          <div>
+            <h3>Analysing Image</h3>
+            <p>The trained EfficientNetB0 model is checking the selected image. Please wait.</p>
+          </div>
+        </div>
+
+        <div id="analysis-error" class="analysis-error" hidden>
+          <span>!</span>
+          <div>
+            <h3>Analysis Failed</h3>
+            <p id="analysis-error-text">The image could not be analysed.</p>
+          </div>
+        </div>
+
+        <div id="detection-result" class="detection-result" hidden>
+          <div class="result-heading">
             <div>
-
-                <span class="section-label">
-                    RESPONSIBLE USE
-                </span>
-
-                <h2>
-                    Designed as an academic prototype
-                </h2>
-
-                <p>
-                    Detect Now uses a YuNet face detector and an EfficientNetB0
-                    classifier trained on cropped real and face-swapped portraits.
-                    In an internal check of 1,894 face swap images, 1,710 were
-                    classified correctly (90.29%). These images were used to
-                    compare models, so this is not an independent accuracy
-                    estimate. Other AI image edits may be missed. Scores are
-                    experimental and should not be treated as forensic proof.
-                </p>
-
+              <span class="result-label">DETECTION RESULT</span>
+              <h3 id="prediction-text">Likely Real</h3>
             </div>
+            <strong id="confidence-text">0% deepfake score</strong>
+          </div>
 
-            <a href="about.html" class="secondary-button">
-                About Our Project
-            </a>
+          <div class="confidence-bar">
+            <span id="confidence-bar-fill"></span>
+          </div>
 
-        </section>
+          <div class="probability-grid">
+            <div>
+              <span>Real score</span>
+              <strong id="real-probability">0%</strong>
+            </div>
+            <div>
+              <span>Deepfake score</span>
+              <strong id="fake-probability">0%</strong>
+            </div>
+          </div>
 
-    </main>
-
-    <footer>
-
-        <div class="footer-container">
-
-            <a href="#home" class="logo footer-logo">
-
-                <span class="logo-icon">
-                    D
-                </span>
-
-                <span>
-                    Detect <strong>Now</strong>
-                </span>
-
-            </a>
-
-            <p>
-                Deepfake Detection Academic Prototype
-            </p>
-
-            <p>
-                Group 20 · Charles Darwin University
-            </p>
-
+          <p class="result-warning">
+            This result is produced by our trained EfficientNetB0 model. The scores are
+            not calibrated probabilities and should not be treated as forensic proof.
+          </p>
         </div>
 
-    </footer>
+        <button type="button" id="analyse-button" class="full-button" hidden>Analyse Image</button>
+        <button type="button" id="download-report-button" class="report-button" hidden>View and Download Report</button>
+        <button type="button" id="upload-again-button" class="full-button" hidden>Upload Another File</button>
+      </div>
 
-    <script src="static/app.js"></script>
+      <div class="security-message">
+        <span>●</span>
+        A clear human face is required for analysis.
+      </div>
+    </div>
+  </div>
+</section>
 
+<section class="statistics-section">
+  <div class="statistics-container">
+    <div class="statistic">
+      <strong>83.1%</strong>
+      <span>Accuracy, Kaggle test set (947 real + 947 swaps)</span>
+    </div>
+    <div class="statistic">
+      <strong>83%</strong>
+      <span>Accuracy, inswapper test set (322 images)</span>
+    </div>
+    <div class="statistic">
+      <strong>88% / 78%</strong>
+      <span>Real correct / swaps caught (Kaggle test)</span>
+    </div>
+    <div class="statistic">
+      <strong>94% / 72%</strong>
+      <span>Real correct / swaps caught (inswapper test)</span>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="content-section">
+  <div class="section-heading">
+    <span class="section-label">PROTOTYPE FEATURES</span>
+    <h2>Simple tools for checking digital media</h2>
+    <p>Detect Now provides an easy interface for uploading facial images and understanding model predictions.</p>
+  </div>
+
+  <div class="features-grid">
+    <article class="feature-card">
+      <span class="feature-icon">◎</span>
+      <h3>Image Analysis</h3>
+      <p>Upload an image and check it using our trained EfficientNetB0 classification model.</p>
+      <span class="feature-link">Available now</span>
+    </article>
+
+    <article class="feature-card">
+      <span class="feature-icon">◉</span>
+      <h3>Face Detection</h3>
+      <p>Confirm that the uploaded image contains a clear human face before analysis.</p>
+      <span class="feature-link">Available now</span>
+    </article>
+
+    <article class="feature-card">
+      <span class="feature-icon">%</span>
+      <h3>Deepfake Score</h3>
+      <p>View the model score and a three-band verdict: likely real, uncertain or likely deepfake. Scores are not calibrated probabilities.</p>
+      <span class="feature-link">Included in results</span>
+    </article>
+
+    <article class="feature-card">
+      <span class="feature-icon">▤</span>
+      <h3>Detection Report</h3>
+      <p>View file details, prediction values, model information and image preview.</p>
+      <span class="feature-link">Available after analysis</span>
+    </article>
+
+    <article class="feature-card">
+      <span class="feature-icon">◷</span>
+      <h3>Upload History</h3>
+      <p>Review the file name, size and date of recently selected images.</p>
+      <span class="feature-link">Available now</span>
+    </article>
+
+    <article class="feature-card">
+      <span class="feature-icon">▶</span>
+      <h3>Video Detection</h3>
+      <p>Video frame extraction and detection will be added in the next project stage.</p>
+      <span class="feature-link">Next development stage</span>
+    </article>
+  </div>
+</section>
+
+<section id="how-it-works" class="how-section">
+  <div class="section-heading">
+    <span class="section-label">SIMPLE PROCESS</span>
+    <h2>How Detect Now works</h2>
+    <p>The current image-detection process follows four simple stages.</p>
+  </div>
+
+  <div class="steps-grid">
+    <article class="step-card">
+      <span class="step-number">01</span>
+      <h3>Select image</h3>
+      <p>Choose image detection from the media selection area.</p>
+    </article>
+
+    <article class="step-card">
+      <span class="step-number">02</span>
+      <h3>Upload file</h3>
+      <p>Select a supported JPG, JPEG, PNG, WEBP or BMP facial image.</p>
+    </article>
+
+    <article class="step-card">
+      <span class="step-number">03</span>
+      <h3>Analyse face</h3>
+      <p>YuNet finds the face; a face crop is analysed using our trained EfficientNetB0 model.</p>
+    </article>
+
+    <article class="step-card">
+      <span class="step-number">04</span>
+      <h3>Download report</h3>
+      <p>View the prediction and save the detailed result as a PDF.</p>
+    </article>
+  </div>
+</section>
+
+<section id="history" class="content-section history-section">
+  <div class="history-card">
+    <div class="history-heading">
+      <div>
+        <span class="section-label">RECENT ACTIVITY</span>
+        <h2>Upload History</h2>
+        <p>Files selected on this browser will appear below.</p>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button type="button" id="export-csv-button" class="outline-button">Export CSV</button>
+        <button type="button" id="clear-history-button" class="outline-button">Clear History</button>
+      </div>
+    </div>
+
+    <div id="history-list">
+      <div class="empty-history-message">
+        <span>◷</span>
+        <h3>No upload history</h3>
+        <p>Your recently selected files will appear here.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="privacy-section">
+  <div>
+    <span class="section-label">RESPONSIBLE USE</span>
+    <h2>Designed as an academic prototype</h2>
+    <p>
+      Detect Now uses a YuNet face detector and an EfficientNetB0 classifier trained on cropped
+      real and face-swapped portraits from two sources: Kaggle face-swap frames and swaps we made
+      with the inswapper tool. On held-out test images it reached 83.1% accuracy on 1,894 Kaggle
+      images (88.0% of real images correct, 78.2% of swaps caught) and about 83% on 322 inswapper
+      images (94% real correct, 72% of swaps caught). The inswapper test uses the same tool as
+      training, so it does not show how well the model handles swap tools it has never seen.
+      It does not detect expression edits made by other AI tools, and roughly 6 to 12 in 100
+      real photos may be flagged as fake. The site shows a verdict of likely real (score below 15%),
+      uncertain (15% to under 50%) or likely deepfake (50% and above). Scores are experimental and
+      should not be treated as forensic proof.
+    </p>
+  </div>
+  <a href="about.html" class="secondary-button">About Our Project</a>
+</section>
+
+</main>
+
+<footer>
+  <div class="footer-container">
+    <a href="#home" class="logo footer-logo">
+      <span class="logo-icon">D</span>
+      <span>Detect <strong>Now</strong></span>
+    </a>
+    <p>Deepfake Detection Academic Prototype</p>
+    <p>Group 20 · Charles Darwin University</p>
+  </div>
+</footer>
+
+<script src="static/app.js"></script>
 </body>
-
 </html>
