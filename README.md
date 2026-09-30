@@ -10,13 +10,17 @@ Charles Darwin University. Upload a facial image and receive a verdict: **likely
 
 Frontend: <https://zenith506.github.io/Detect-Now/>
 
-The GitHub Pages site hosts the frontend only. Detection needs the Flask backend
-running **on your own computer** (see below). Your browser then sends the image to
-`http://127.0.0.1:5000`; the image never goes to a public server.
+Backend API: <https://detect-now-backend.onrender.com> (hosted on Render).
 
-Browser notes: Chrome and Edge may ask permission to connect to a local server.
-Safari blocks it, so use Chrome, Edge or Firefox, or open the site locally
-(`python -m http.server 8000`, then <http://localhost:8000>).
+When the page is opened from any address other than `localhost` or `127.0.0.1`, it sends the image
+to the hosted backend, so uploaded images do travel to that server for analysis (they are analysed
+in memory and not saved by the server). When the page is opened from `localhost`, it uses a backend
+running on your own computer instead (`python backend.py`, at `http://127.0.0.1:5000`).
+
+On the hosted backend, set the start command to
+`gunicorn backend:app --workers 1 --threads 2 --timeout 180 --bind 0.0.0.0:$PORT` and, if the
+frontend is served from an address other than GitHub Pages or localhost, set
+`DETECT_NOW_CORS_ORIGINS` to a comma-separated list of the allowed addresses.
 
 ## Features
 

@@ -1,13 +1,12 @@
 // ---------------------------------------------------------------------------
 // Where the backend lives.
-//  - Page opened from localhost / 127.0.0.1: use the same host, port 5000.
-//  - Page opened from anywhere else (e.g. GitHub Pages) or from a file:
-//    use the backend running on YOUR computer.
+//  - Page opened from localhost / 127.0.0.1: use a backend on the same computer (port 5000).
+//  - Page opened from anywhere else (the hosted site): use the backend hosted on Render.
 // To point at another server, add this line BEFORE app.js in index.html:
 //    <script>window.DETECT_NOW_API_URL = "https://your-server/predict";</script>
 // ---------------------------------------------------------------------------
 const LOCAL_HOSTNAMES = ["localhost", "127.0.0.1"];
-const DEFAULT_API_URL = "http://127.0.0.1:5000/predict";
+const DEFAULT_API_URL = "https://detect-now-backend.onrender.com/predict";
 
 const API_URL =
     window.DETECT_NOW_API_URL ||
