@@ -227,7 +227,7 @@
                     </p>
 
                     <p>
-                        The trained EfficientNetB0 classifier processes the face crop and returns a Real or Deepfake verdict. The interface shows its deepfake score and decision threshold. Scores are not calibrated probabilities.
+                        The trained EfficientNetB0 classifier processes the face crop and returns a verdict of likely real, uncertain or likely deepfake. The interface shows its deepfake score and the verdict bands (below 15% likely real, 15% to under 50% uncertain, 50% and above likely deepfake). Scores are not calibrated probabilities.
                     </p>
 
                 </div>
@@ -287,9 +287,7 @@
                 <h2>How we developed the model</h2>
             </div>
             <div class="about-description">
-                <p>The current face swap classifier was fine-tuned on
-                cropped real and face-swapped portraits. YuNet was used
-                to prepare 14,090 training faces and 1,939 validation faces.</p>
+                <p>The current face swap classifier (v2) was built in two stages. The original model was fine-tuned on cropped real and face-swapped portraits from a Kaggle dataset, with YuNet used to prepare 14,090 training faces and 1,939 validation faces. It was then fine-tuned again on 2,748 face crops (about 1,400 Kaggle frames plus 1,354 images made with the inswapper tool), with 602 crops for validation, using flip, JPEG-compression, brightness and contrast augmentation.</p>
                 <p>The model uses EfficientNetB0 for image classification.
                 Face detection and classification are separate steps.</p>
                 <p>Results for other types of AI image edits need separate
@@ -302,42 +300,39 @@
         <section class="mission-section">
         <div class="section-heading">
             <span class="section-label">MODEL PERFORMANCE</span>
-            <h2>Internal face swap check</h2>
-            <p>Exploratory check on 1,894 images used when comparing models.
-            These figures are not an independent accuracy estimate.</p>
+            <h2>Held-out test results</h2>
+            <p>Results for the current (v2) model on test images it was not trained on. Thresholds were chosen by hand from validation results and the test sets are small, so treat small differences as noise.</p>
         </div>
 
         <div class="mission-grid">
             <article class="mission-card">
-                <span class="mission-number">90.29%</span>
-                <h3>Overall correct</h3>
-                <p>1,710 of 1,894 face swap images were classified correctly.</p>
+                <span class="mission-number">83.1%</span>
+                <h3>Kaggle test accuracy</h3>
+                <p>1,574 of 1,894 Kaggle test images (947 real, 947 swaps) were classified correctly.</p>
             </article>
 
             <article class="mission-card">
-                <span class="mission-number">887 / 947</span>
-                <h3>Real images correct</h3>
-                <p>Real images labelled Real in this check.</p>
+                <span class="mission-number">833 / 947</span>
+                <h3>Real images correct (Kaggle test)</h3>
+                <p>Real images labelled real at threshold 0.40.</p>
             </article>
 
             <article class="mission-card">
-                <span class="mission-number">823 / 947</span>
-                <h3>Face swaps detected</h3>
-                <p>Altered images labelled Deepfake in this check.</p>
+                <span class="mission-number">741 / 947</span>
+                <h3>Face swaps detected (Kaggle test)</h3>
+                <p>Altered images labelled deepfake at threshold 0.40.</p>
             </article>
 
             <article class="mission-card">
-                <span class="mission-number">10 / 10</span>
-                <h3>Other portraits: real</h3>
-                <p>Real portraits labelled Real in a small separate
-                development check.</p>
+                <span class="mission-number">94% / 72%</span>
+                <h3>Inswapper test: real / swaps</h3>
+                <p>Real images called real and swaps caught on 322 images made with a different swap tool. That tool was also used in training, so this is not a test on an unseen tool.</p>
             </article>
 
             <article class="mission-card">
-                <span class="mission-number">0 / 10</span>
-                <h3>Other portraits: edits</h3>
-                <p>Edited portraits detected in that check. This shows
-                a limitation outside the face swap dataset.</p>
+                <span class="mission-number">2 / 39</span>
+                <h3>AI expression edits caught</h3>
+                <p>In the team test set. The model is not designed to detect these edits, which is a limitation outside face swaps.</p>
             </article>
         </div>
     </section>
@@ -634,8 +629,8 @@
                     <p><strong>1. Check the model files.</strong> The
                     <code>model</code> folder must contain:</p>
                     <ul>
-                        <li><code>detect_now_efficientnetb0_faceswap_crops.keras</code></li>
-                        <li><code>decision_threshold_faceswap_crops.json</code></li>
+                        <li><code>detect_now_efficientnetb0_faceswap_crops_v2.keras</code></li>
+                        <li><code>decision_threshold_detect_now_efficientnetb0_faceswap_crops_v2.json</code></li>
                         <li><code>face_detection_yunet_2023mar.onnx</code></li>
                     </ul>
 

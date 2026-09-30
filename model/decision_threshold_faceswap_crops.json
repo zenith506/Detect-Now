@@ -1,8 +1,8 @@
 {
-  "fake_threshold": 0.81,
-  "validation_f1": 0.9222,
-  "label_order": [
-    "real",
-    "fake"
-  ]
+    "fake_threshold":  0.45,
+    "validation_f1":  0.9222,
+    "label_order":  [
+                        "real",
+                        "fake"
+                    ]
 }

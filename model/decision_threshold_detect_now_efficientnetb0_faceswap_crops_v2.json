@@ -1,0 +1,9 @@
+{
+  "fake_threshold": 0.4,
+  "model_file": "detect_now_efficientnetb0_faceswap_crops_v2.keras",
+  "label_order": [
+    "real",
+    "fake"
+  ],
+  "note": "Chosen by hand from validation results on Kaggle and inswapper images. The automatic choice was 0.72."
+}
