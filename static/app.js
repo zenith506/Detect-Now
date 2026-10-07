@@ -86,9 +86,15 @@ function openUploadArea(mediaType) {
 
 
 function clearFaceBox() {
-    const existing = document.getElementById("face-box-canvas");
-    if (existing) {
-        existing.remove();
+    // the preview may currently show a copy of the photo with the box painted on it
+    if (imagePreview.dataset.boxed === "1" && currentPreviewURL) {
+        imagePreview.src = currentPreviewURL;
+    }
+    delete imagePreview.dataset.boxed;
+
+    const legacy = document.getElementById("face-box-canvas");
+    if (legacy) {
+        legacy.remove();
     }
 }
 
@@ -312,7 +318,8 @@ analyseButton.addEventListener("click", async function () {
 const VERDICTS = {
     LIKELY_REAL: { label: "LIKELY REAL", cls: "real-result", report: "real" },
     UNCERTAIN: { label: "UNCERTAIN", cls: "uncertain-result", report: "uncertain" },
-    LIKELY_DEEPFAKE: { label: "LIKELY DEEPFAKE", cls: "fake-result", report: "fake" }
+    LIKELY_DEEPFAKE: { label: "LIKELY DEEPFAKE", cls: "fake-result", report: "fake" },
+    DEEPFAKE: { label: "DEEPFAKE", cls: "fake-result", report: "deepfake" }
 };
 
 
@@ -329,13 +336,14 @@ function verdictInfo(result) {
 
 
 function bandText(result) {
-    const low = Number(result.band_low);
-    const high = Number(result.band_high);
-    if (!Number.isFinite(low) || !Number.isFinite(high)) {
+    const a = Number(result.band_real_below);
+    const b = Number(result.band_uncertain_below);
+    const c = Number(result.band_deepfake_from);
+    if (!Number.isFinite(a) || !Number.isFinite(b) || !Number.isFinite(c)) {
         return "";
     }
-    return "Below " + low + "% likely real · " + low + "% to under " + high +
-        "% uncertain · " + high + "% and above likely deepfake";
+    return "Below " + a + "% likely real · " + a + "% to under " + b + "% uncertain · " +
+        b + "% to under " + c + "% likely deepfake · " + c + "% and above deepfake";
 }
 
 
@@ -521,6 +529,7 @@ body { margin: 0; background: #eef3f5; color: #233746; font-family: Arial, Helve
 .verdict.real { background: #e2f5eb; color: #18764f; }
 .verdict.fake { background: #ffe5e5; color: #a22d2d; }
 .verdict.uncertain { background: #fff3d6; color: #8a5a00; }
+.verdict.deepfake { background: #f7c4c4; color: #8c1d1d; }
 .report-section { margin-top: 22px; overflow: hidden; border: 1px solid #dce6eb; border-radius: 11px; }
 .report-section h2 { margin: 0; padding: 16px 18px; background: #f6f9fa; color: #0d2740; border-bottom: 1px solid #dce6eb; font-size: 15px; }
 .detail-row { display: grid; padding: 12px 18px; grid-template-columns: 190px 1fr; border-bottom: 1px solid #edf1f3; }
@@ -569,11 +578,12 @@ function createReportHTML(imageData, checksum, imageDimensions) {
     const fakeScore = Number(latestResult.fake_probability);
     const realScore = Number(latestResult.real_probability);
     const fakeThreshold = Number(latestResult.fake_threshold);
-    const bandLow = Number(latestResult.band_low);
-    const bandHigh = Number(latestResult.band_high);
-    const bandsKnown = Number.isFinite(bandLow) && Number.isFinite(bandHigh) && Boolean(latestResult.verdict);
+    const bandA = Number(latestResult.band_real_below);
+    const bandB = Number(latestResult.band_uncertain_below);
+    const bandC = Number(latestResult.band_deepfake_from);
+    const bandsKnown = Number.isFinite(bandA) && Number.isFinite(bandB) && Number.isFinite(bandC) && Boolean(latestResult.verdict);
     const expectedVerdict =
-        fakeScore < bandLow ? "LIKELY_REAL" : fakeScore < bandHigh ? "UNCERTAIN" : "LIKELY_DEEPFAKE";
+        fakeScore < bandA ? "LIKELY_REAL" : fakeScore < bandB ? "UNCERTAIN" : fakeScore < bandC ? "LIKELY_DEEPFAKE" : "DEEPFAKE";
     const mismatch = bandsKnown
         ? Number.isFinite(fakeScore) && expectedVerdict !== latestResult.verdict
         : Number.isFinite(fakeScore) &&
@@ -704,7 +714,7 @@ function createReportHTML(imageData, checksum, imageDimensions) {
     <div class="detail-row"><span>Training method</span><p>Transfer learning and EfficientNetB0 fine-tuning.</p></div>
     <div class="detail-row"><span>Score interpretation</span>
       <p>The deepfake score is a raw classifier output, not a calibrated probability.
-      The verdict comes from fixed score bands (see Verdict bands above); the middle band means the model is unsure.</p></div>
+      The verdict comes from fixed score bands (see Verdict bands above); the uncertain band means the model is unsure.</p></div>
     ${evaluationRows}
   </section>
 
@@ -923,46 +933,55 @@ if (uploadBox) {
 // canvas is created here and laid over the preview image.
 
 function drawFaceBox(faceBox) {
-    clearFaceBox();
-
-    if (!faceBox || !imagePreview.naturalWidth || !imagePreview.clientWidth) {
+    if (!faceBox || !currentPreviewURL) {
         return;
     }
 
-    const parent = imagePreview.parentElement;
-    if (window.getComputedStyle(parent).position === "static") {
-        parent.style.position = "relative";
-    }
+    const sourceUrl = currentPreviewURL;
+    const source = new Image();
 
-    const canvas = document.createElement("canvas");
-    canvas.id = "face-box-canvas";
-    canvas.width = imagePreview.clientWidth;
-    canvas.height = imagePreview.clientHeight;
-    canvas.style.position = "absolute";
-    canvas.style.left = imagePreview.offsetLeft + "px";
-    canvas.style.top = imagePreview.offsetTop + "px";
-    canvas.style.pointerEvents = "none";
-    parent.appendChild(canvas);
+    source.onload = function () {
+        if (sourceUrl !== currentPreviewURL) {
+            return; // another file was chosen in the meantime
+        }
 
-    const context = canvas.getContext("2d");
-    const scaleX = canvas.width / imagePreview.naturalWidth;
-    const scaleY = canvas.height / imagePreview.naturalHeight;
+        const longest = Math.max(source.naturalWidth, source.naturalHeight);
+        const scale = Math.min(1, 1024 / longest);
+        const width = Math.round(source.naturalWidth * scale);
+        const height = Math.round(source.naturalHeight * scale);
 
-    const x = faceBox.x * scaleX;
-    const y = faceBox.y * scaleY;
-    const width = faceBox.width * scaleX;
-    const height = faceBox.height * scaleY;
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext("2d");
+        context.drawImage(source, 0, 0, width, height);
 
-    context.strokeStyle = "#35a6aa";
-    context.lineWidth = 3;
-    context.strokeRect(x, y, width, height);
+        // face_box is in the photo's own pixels, so it lines up exactly on the copy
+        const x = faceBox.x * scale;
+        const y = faceBox.y * scale;
+        const boxWidth = faceBox.width * scale;
+        const boxHeight = faceBox.height * scale;
 
-    const labelY = y - 18 > 0 ? y - 18 : y;
-    context.fillStyle = "#126f8a";
-    context.fillRect(x, labelY, 96, 18);
-    context.fillStyle = "#ffffff";
-    context.font = "bold 11px sans-serif";
-    context.fillText("Face detected", x + 5, labelY + 13);
+        context.strokeStyle = "#35a6aa";
+        context.lineWidth = Math.max(2, Math.round(Math.max(width, height) / 200));
+        context.strokeRect(x, y, boxWidth, boxHeight);
+
+        const fontSize = Math.max(11, Math.round(Math.max(width, height) / 40));
+        const label = "Face detected";
+        context.font = "bold " + fontSize + "px sans-serif";
+        const labelWidth = context.measureText(label).width + fontSize;
+        const labelHeight = Math.round(fontSize * 1.5);
+        const labelY = y - labelHeight >= 0 ? y - labelHeight : y;
+        context.fillStyle = "#126f8a";
+        context.fillRect(x, labelY, labelWidth, labelHeight);
+        context.fillStyle = "#ffffff";
+        context.fillText(label, x + fontSize / 2, labelY + labelHeight * 0.72);
+
+        imagePreview.src = canvas.toDataURL("image/png");
+        imagePreview.dataset.boxed = "1";
+    };
+
+    source.src = sourceUrl;
 }
 
 

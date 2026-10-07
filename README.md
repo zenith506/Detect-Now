@@ -2,7 +2,7 @@
 
 Detect Now is an academic deepfake-detection prototype developed by Group 20 at
 Charles Darwin University. Upload a facial image and receive a verdict: **likely real**,
-**uncertain** or **likely deepfake** (face swap).
+**uncertain**, **likely deepfake** or **deepfake** (face swap).
 
 **It is a prototype. Results can be wrong and are not forensic proof.**
 
@@ -26,7 +26,7 @@ frontend is served from an address other than GitHub Pages or localhost, set
 
 - Image upload (JPG, JPEG, PNG, WEBP, BMP, up to 10 MB), preview and face box overlay
 - Human-face validation (YuNet); only the largest face in a photo is analysed
-- Three-band verdict (likely real / uncertain / likely deepfake) from the deepfake score
+- Four-band verdict (likely real / uncertain / likely deepfake / deepfake) from the deepfake score
 - Downloadable report with SHA-256 checksum
 - Upload history (stored only in your browser) and CSV export
 - Video detection: planned, not available yet
@@ -36,7 +36,7 @@ frontend is served from an address other than GitHub Pages or localhost, set
 ```
 Upload -> file checks -> YuNet face detection -> crop with 35% margin
       -> pad to square -> resize to 224 x 224 -> EfficientNetB0 -> score
-      -> score < 15% ? LIKELY REAL : score < 50% ? UNCERTAIN : LIKELY DEEPFAKE
+      -> score < 10% ? LIKELY REAL : < 25% ? UNCERTAIN : < 50% ? LIKELY DEEPFAKE : DEEPFAKE
 ```
 
 The scores are raw classifier outputs, **not calibrated probabilities**.
@@ -96,35 +96,39 @@ How the v2 model was made (scripts are in `tools/`; the two Colab ones were run 
 
 ### Verdict bands
 
-The website shows one of three verdicts, based only on the deepfake score:
+The website shows one of four verdicts, based only on the deepfake score:
 
 | Deepfake score | Verdict |
 |---|---|
-| below 15% | likely real |
-| 15% to under 50% | uncertain |
-| 50% and above | likely deepfake |
+| below 10% | likely real |
+| 10% to under 25% | uncertain |
+| 25% to under 50% | likely deepfake |
+| 50% and above | deepfake |
 
-The cut-offs can be changed with `DETECT_NOW_BAND_LOW` and `DETECT_NOW_BAND_HIGH` (fractions, for
-example `0.15` and `0.50`). The API still also returns the older two-way `prediction`, made with the
-single decision threshold in the threshold file (0.40 for v2); the shared-test scoring scripts use that.
+The cut-offs can be changed with `DETECT_NOW_BAND_REAL_BELOW`, `DETECT_NOW_BAND_UNCERTAIN_BELOW` and
+`DETECT_NOW_BAND_DEEPFAKE_FROM` (fractions, default `0.10`, `0.25` and `0.50`). The API also still returns the
+older two-way `prediction`, made with the single decision threshold in the threshold file (0.40 for v2); the
+shared-test scoring scripts use that.
 
-What each band contained on the Kaggle test set (v2 model, 947 real + 947 swaps):
+The cut-offs were chosen after looking at the 77-image live test, so they have not yet been confirmed on new
+images. What each band contained:
 
-| Band | Real images | Swaps | Share that were swaps |
-|---|---|---|---|
-| below 15% | 756 | 124 | 14% |
-| 15% to under 50% | 90 | 113 | 56% (close to a coin flip) |
-| 50% and above | 101 | 710 | 88% |
+| Band | Kaggle test: real | Kaggle test: swaps | Live test: real | Live test: edited | Live test: swaps |
+|---|---|---|---|---|---|
+| below 10% | 725 | 101 | 22 | 20 | 0 |
+| 10% to under 25% | 74 | 65 | 2 | 3 | 5 |
+| 25% to under 50% | 47 | 71 | 2 | 2 | 8 |
+| 50% and above | 101 | 710 | 0 | 0 | 13 |
 
-So the middle band really is uncertain, which is why it is labelled that way and not "likely
-deepfake". Of the real images, 79.8% scored below 15%, 9.5% landed in the middle band and 10.7%
-scored 50% or more (so were labelled likely deepfake). Band figures for the inswapper test set have
-not been calculated yet.
+Compared with the earlier bands (15% and 50%), on the Kaggle test set the share of real photos given a
+likely deepfake or deepfake label rose from 10.7% to 15.6%, and the share of swaps given one rose from 75.0%
+to 82.5%. About 1 in 8 of the images in the top band on the Kaggle set were real (101 of 811), so
+"deepfake" is a strong label for a score that is not a calibrated probability.
 
 ### Results
 
 The results tables below use a single threshold each (0.45 for the original model, 0.40 for v2),
-not the three bands.
+not the four bands.
 
 Two models were compared on the same held-out test images. "Real correct" is the share of real
 images called real; "swaps caught" is the share of face swaps called fake.
@@ -158,7 +162,7 @@ used for the inswapper pairs; how the swaps were generated)_
 
 - Face swaps from tools other than the two in the training data may be missed.
 - AI expression edits and other non-swap manipulations are not detected.
-- About 6 to 12 in 100 real photos were flagged as fake in the test sets.
+- On the Kaggle test set, 15.6% of real photos got a likely deepfake or deepfake verdict (10.7% got deepfake).
 - Heavy compression, blur, low resolution, covered or very small faces reduce reliability.
 - Faces are judged one at a time (largest face only).
 - The models have not been tested on images recompressed by social media.

@@ -70,28 +70,37 @@ THRESHOLD_PATH = os.path.join(BASE_FOLDER, "model", THRESHOLD_FILE)
 
 DEFAULT_FAKE_THRESHOLD = 0.26
 
-# Three-band verdict shown to users (deepfake score as a fraction, 0-1):
-#   below BAND_LOW            -> LIKELY_REAL
-#   BAND_LOW up to BAND_HIGH  -> UNCERTAIN
-#   BAND_HIGH and above       -> LIKELY_DEEPFAKE
-BAND_LOW = float(os.environ.get("DETECT_NOW_BAND_LOW", "0.15"))
-BAND_HIGH = float(os.environ.get("DETECT_NOW_BAND_HIGH", "0.50"))
-if not 0.0 < BAND_LOW < BAND_HIGH < 1.0:
-    raise SystemExit("Verdict bands must satisfy 0 < BAND_LOW < BAND_HIGH < 1.")
+# Four-band verdict shown to users (deepfake score as a fraction, 0-1):
+#   below BAND_REAL_BELOW                           -> LIKELY_REAL      (0% to under 10%)
+#   BAND_REAL_BELOW up to BAND_UNCERTAIN_BELOW      -> UNCERTAIN        (10% to under 25%)
+#   BAND_UNCERTAIN_BELOW up to BAND_DEEPFAKE_FROM   -> LIKELY_DEEPFAKE  (25% to under 50%)
+#   BAND_DEEPFAKE_FROM and above                    -> DEEPFAKE         (50% to 100%)
+BAND_REAL_BELOW = float(os.environ.get("DETECT_NOW_BAND_REAL_BELOW", "0.10"))
+BAND_UNCERTAIN_BELOW = float(os.environ.get("DETECT_NOW_BAND_UNCERTAIN_BELOW", "0.25"))
+BAND_DEEPFAKE_FROM = float(os.environ.get("DETECT_NOW_BAND_DEEPFAKE_FROM", "0.50"))
+if not 0.0 < BAND_REAL_BELOW < BAND_UNCERTAIN_BELOW < BAND_DEEPFAKE_FROM < 1.0:
+    raise SystemExit(
+        "Verdict bands must satisfy 0 < REAL_BELOW < UNCERTAIN_BELOW < DEEPFAKE_FROM < 1."
+    )
 
 VERDICT_TEXT = {
     "LIKELY_REAL": "likely real",
     "UNCERTAIN": "uncertain",
     "LIKELY_DEEPFAKE": "likely deepfake",
+    "DEEPFAKE": "deepfake",
 }
 
 
 def verdict_for(fake_probability):
-    if fake_probability < BAND_LOW:
+    if fake_probability < BAND_REAL_BELOW:
         return "LIKELY_REAL"
-    if fake_probability < BAND_HIGH:
+    if fake_probability < BAND_UNCERTAIN_BELOW:
         return "UNCERTAIN"
-    return "LIKELY_DEEPFAKE"
+    if fake_probability < BAND_DEEPFAKE_FROM:
+        return "LIKELY_DEEPFAKE"
+    return "DEEPFAKE"
+
+
 MODEL_NAME = "Detect Now EfficientNetB0"
 
 ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "webp", "bmp"}
@@ -228,8 +237,10 @@ def predict_image(image_batch):
 def create_explanation(verdict, fake_probability):
     return (
         f"Verdict: {VERDICT_TEXT[verdict]}. Deepfake score: {fake_probability * 100:.2f}%. "
-        f"Bands: below {BAND_LOW * 100:.0f}% likely real, {BAND_LOW * 100:.0f}% to under "
-        f"{BAND_HIGH * 100:.0f}% uncertain, {BAND_HIGH * 100:.0f}% and above likely deepfake. "
+        f"Bands: below {BAND_REAL_BELOW * 100:.0f}% likely real, "
+        f"{BAND_REAL_BELOW * 100:.0f}% to under {BAND_UNCERTAIN_BELOW * 100:.0f}% uncertain, "
+        f"{BAND_UNCERTAIN_BELOW * 100:.0f}% to under {BAND_DEEPFAKE_FROM * 100:.0f}% likely deepfake, "
+        f"{BAND_DEEPFAKE_FROM * 100:.0f}% and above deepfake. "
         "This score is not a calibrated probability or forensic proof."
     )
 
@@ -273,8 +284,9 @@ def health():
             round(fake_threshold * 100, 2) if fake_threshold is not None else None
         ),
         "verdict_bands": {
-            "likely_real_below": round(BAND_LOW * 100, 2),
-            "likely_deepfake_from": round(BAND_HIGH * 100, 2),
+            "likely_real_below": round(BAND_REAL_BELOW * 100, 2),
+            "uncertain_below": round(BAND_UNCERTAIN_BELOW * 100, 2),
+            "deepfake_from": round(BAND_DEEPFAKE_FROM * 100, 2),
         },
     })
 
@@ -358,8 +370,9 @@ def predict():
         return jsonify({
             "success": True,
             "verdict": verdict,
-            "band_low": round(BAND_LOW * 100, 2),
-            "band_high": round(BAND_HIGH * 100, 2),
+            "band_real_below": round(BAND_REAL_BELOW * 100, 2),
+            "band_uncertain_below": round(BAND_UNCERTAIN_BELOW * 100, 2),
+            "band_deepfake_from": round(BAND_DEEPFAKE_FROM * 100, 2),
             "prediction": prediction,
             "result": prediction,
             "classification": prediction,
