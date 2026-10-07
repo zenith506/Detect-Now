@@ -228,7 +228,7 @@
     <article class="feature-card">
       <span class="feature-icon">%</span>
       <h3>Deepfake Score</h3>
-      <p>View the model score and a three-band verdict: likely real, uncertain or likely deepfake. Scores are not calibrated probabilities.</p>
+      <p>View the model score and a four-band verdict: likely real, uncertain, likely deepfake or deepfake. Scores are not calibrated probabilities.</p>
       <span class="feature-link">Included in results</span>
     </article>
 
@@ -324,9 +324,7 @@
       images (88.0% of real images correct, 78.2% of swaps caught) and about 83% on 322 inswapper
       images (94% real correct, 72% of swaps caught). The inswapper test uses the same tool as
       training, so it does not show how well the model handles swap tools it has never seen.
-      It does not detect expression edits made by other AI tools, and roughly 6 to 12 in 100
-      real photos may be flagged as fake. The site shows a verdict of likely real (score below 15%),
-      uncertain (15% to under 50%) or likely deepfake (50% and above). Scores are experimental and
+      It does not detect expression edits made by other AI tools, and on the Kaggle test set about 1 in 6 real photos (15.6%) was labelled likely deepfake or deepfake. The site shows a verdict of likely real (score below 10%), uncertain (10% to under 25%), likely deepfake (25% to under 50%) or deepfake (50% and above). Scores are experimental and
       should not be treated as forensic proof.
     </p>
   </div>
