@@ -3,6 +3,21 @@ import os
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+os.environ["PYTHONUNBUFFERED"] = "1"
+
+# A hosted server often "sees" many more CPU cores than it is allowed to use.
+# TensorFlow, OpenCV and numpy then start far too many threads and can stall.
+# Limit them to the small number set here (default 1; override with DETECT_NOW_THREADS).
+_THREADS = os.environ.get("DETECT_NOW_THREADS", "1")
+for _name in (
+    "OMP_NUM_THREADS",
+    "OPENBLAS_NUM_THREADS",
+    "MKL_NUM_THREADS",
+    "NUMEXPR_NUM_THREADS",
+    "TF_NUM_INTRAOP_THREADS",
+    "TF_NUM_INTEROP_THREADS",
+):
+    os.environ.setdefault(_name, _THREADS)
 
 from datetime import datetime, timezone
 from io import BytesIO
@@ -30,6 +45,19 @@ from preprocessing import (  # noqa: F401  (some names are used further down)
 )
 
 HAS_TF = True  # kept only in case other code still refers to it
+
+cv2.setNumThreads(int(_THREADS))
+try:
+    tf.config.threading.set_intra_op_parallelism_threads(int(_THREADS))
+    tf.config.threading.set_inter_op_parallelism_threads(int(_THREADS))
+except RuntimeError:
+    pass  # already initialised; the environment variables above still apply
+
+
+def log(message):
+    """Print right away so the Render log shows where a request is."""
+    print(f"[detect-now] {message}", flush=True)
+
 
 app = Flask(__name__)
 
@@ -328,9 +356,12 @@ def predict():
         }), 400
 
     try:
+        log(f"request received: {filename}")
         original_image = read_uploaded_image(uploaded_file)
+        log(f"image read: {original_image.width}x{original_image.height}")
 
         face_count, face_box, detection_method = detect_human_face(original_image)
+        log(f"face detection done: {face_count} face(s)")
 
         # Never send a non-face image to the binary Real/Deepfake model.
         # The model has no "not a face" class, so doing that could cause cars,
@@ -351,7 +382,9 @@ def predict():
 
         cropped_image = crop_face(original_image, face_box)
         image_batch = preprocess_image(cropped_image)
+        log("running model")
         result = predict_image(image_batch)
+        log("model done")
 
         prediction = result["prediction"]
         confidence = result["confidence"]
