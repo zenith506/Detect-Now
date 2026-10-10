@@ -1,12 +1,3 @@
-"""Score one tool's results against the answer key.
-
-    python score_results.py answer_key.csv results_toolname.csv
-
-results file: two columns  file,verdict   (verdict = real or fake; blank rows are
-counted as "no answer" and reported separately).
-
-Prints the same table for every tool so the team can compare like with like.
-"""
 import csv
 import sys
 from collections import defaultdict
