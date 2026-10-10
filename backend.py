@@ -5,9 +5,6 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 os.environ["PYTHONUNBUFFERED"] = "1"
 
-# A hosted server often "sees" many more CPU cores than it is allowed to use.
-# TensorFlow, OpenCV and numpy then start far too many threads and can stall.
-# Limit them to the small number set here (default 1; override with DETECT_NOW_THREADS).
 _THREADS = os.environ.get("DETECT_NOW_THREADS", "1")
 for _name in (
     "OMP_NUM_THREADS",
@@ -29,8 +26,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from PIL import Image, ImageOps, UnidentifiedImageError
 
-# Preprocessing lives in preprocessing.py so training and prediction match.
-from preprocessing import (  # noqa: F401  (some names are used further down)
+from preprocessing import (
     MODEL_INPUT_SIZE,
     YUNET_MAX_DETECTION_SIZE,
     YUNET_MODEL_PATH,
@@ -44,15 +40,14 @@ from preprocessing import (  # noqa: F401  (some names are used further down)
     preprocess_image,
 )
 
-HAS_TF = True  # kept only in case other code still refers to it
+HAS_TF = True  
 
 cv2.setNumThreads(int(_THREADS))
 try:
     tf.config.threading.set_intra_op_parallelism_threads(int(_THREADS))
     tf.config.threading.set_inter_op_parallelism_threads(int(_THREADS))
 except RuntimeError:
-    pass  # already initialised; the environment variables above still apply
-
+    pass  
 
 def log(message):
     """Print right away so the Render log shows where a request is."""
@@ -61,8 +56,6 @@ def log(message):
 
 app = Flask(__name__)
 
-# Only these websites may call the API from a browser. To allow others, set
-# DETECT_NOW_CORS_ORIGINS="https://a.example,https://b.example" (comma list).
 _custom_origins = os.environ.get("DETECT_NOW_CORS_ORIGINS", "").strip()
 if _custom_origins:
     ALLOWED_ORIGINS = [o.strip() for o in _custom_origins.split(",") if o.strip()]
@@ -74,16 +67,11 @@ else:
     ]
 CORS(app, origins=ALLOWED_ORIGINS)
 
-# Matches the "Maximum 10 MB" limit enforced by the website (static/app.js).
 app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
 BASE_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
-# Default: the v2 model (trained on Kaggle + inswapper data) with its threshold.
-# To go back to the original model, set BOTH of these before starting the server
-# (file names inside /model):
-#   DETECT_NOW_MODEL_FILE=detect_now_efficientnetb0_faceswap_crops.keras
-#   DETECT_NOW_THRESHOLD_FILE=decision_threshold_faceswap_crops.json
+
 MODEL_FILE = os.environ.get(
     "DETECT_NOW_MODEL_FILE",
     "detect_now_efficientnetb0_faceswap_crops_v2.keras",
@@ -98,11 +86,7 @@ THRESHOLD_PATH = os.path.join(BASE_FOLDER, "model", THRESHOLD_FILE)
 
 DEFAULT_FAKE_THRESHOLD = 0.26
 
-# Four-band verdict shown to users (deepfake score as a fraction, 0-1):
-#   below BAND_REAL_BELOW                           -> LIKELY_REAL      (0% to under 10%)
-#   BAND_REAL_BELOW up to BAND_UNCERTAIN_BELOW      -> UNCERTAIN        (10% to under 25%)
-#   BAND_UNCERTAIN_BELOW up to BAND_DEEPFAKE_FROM   -> LIKELY_DEEPFAKE  (25% to under 50%)
-#   BAND_DEEPFAKE_FROM and above                    -> DEEPFAKE         (50% to 100%)
+
 BAND_REAL_BELOW = float(os.environ.get("DETECT_NOW_BAND_REAL_BELOW", "0.10"))
 BAND_UNCERTAIN_BELOW = float(os.environ.get("DETECT_NOW_BAND_UNCERTAIN_BELOW", "0.25"))
 BAND_DEEPFAKE_FROM = float(os.environ.get("DETECT_NOW_BAND_DEEPFAKE_FROM", "0.50"))
@@ -133,7 +117,6 @@ MODEL_NAME = "Detect Now EfficientNetB0"
 
 ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "webp", "bmp"}
 
-# Reject huge images (a small file can still decompress to gigabytes).
 MAX_IMAGE_PIXELS = 40_000_000
 
 model = None
@@ -162,7 +145,7 @@ def load_fake_threshold():
         )
         return DEFAULT_FAKE_THRESHOLD
 
-    # Files written by quick_retrain.py record which model they belong to.
+    
     owner = threshold_data.get("model_file")
     if owner and owner != MODEL_FILE:
         raise RuntimeError(
@@ -363,9 +346,7 @@ def predict():
         face_count, face_box, detection_method = detect_human_face(original_image)
         log(f"face detection done: {face_count} face(s)")
 
-        # Never send a non-face image to the binary Real/Deepfake model.
-        # The model has no "not a face" class, so doing that could cause cars,
-        # animals or objects to be incorrectly labelled Real or Deepfake.
+        
         if face_box is None:
             return jsonify({
                 "success": False,
@@ -483,6 +464,4 @@ def file_too_large(error):
 
 
 if __name__ == "__main__":
-    # The model and face detector are already loaded at start-up (see
-    # initialise() above); if a file is missing the server refuses to start.
     app.run(host="127.0.0.1", port=5000, debug=False)

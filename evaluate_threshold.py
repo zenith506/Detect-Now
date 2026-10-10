@@ -1,24 +1,3 @@
-"""Measure Detect Now at different decision thresholds.
-
-Usage (from the project folder, with .venv active):
-
-    python evaluate_threshold.py "path\\to\\real_images" "path\\to\\fake_images"
-
-Optional:
-    --thresholds 0.26 0.45 0.81     thresholds to highlight (default shown)
-    --csv scores.csv                save every image's score
-    --already-cropped               images are ready-made face crops (skip YuNet)
-
-It runs the SAME steps as the website: YuNet face detection -> crop -> pad ->
-resize -> model. Images with no detectable face are skipped (and counted),
-exactly as the website would refuse them.
-
-HONESTY WARNING: these numbers are only trustworthy if the images were never
-used for training AND you did not pick the threshold by looking at these same
-images. Choose the threshold on the validation set, then measure once on a
-separate test set.
-"""
-
 import argparse
 import csv
 import os

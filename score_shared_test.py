@@ -1,14 +1,3 @@
-"""Run Detect Now over the team's shared test images and write a results file.
-
-    python score_shared_test.py shared_test_images\\images results_detectnow_v2.csv --threshold 0.40
-
-Choose the model with DETECT_NOW_MODEL_FILE (file name inside the model folder),
-exactly as for the backend. The threshold is required so it is never guessed.
-
-Uses the SAME steps as the website: YuNet face detection -> crop -> pad -> resize.
-An image where no face is found gets an empty verdict (the website would refuse it too).
-Then score it with:   python score_results.py answer_key.csv results_detectnow_v2.csv
-"""
 import argparse
 import csv
 import os

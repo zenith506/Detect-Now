@@ -1,10 +1,3 @@
-"""Shared image preprocessing for Detect Now.
-
-backend.py (live predictions) and prepare_crops.py (building training data)
-BOTH import from this file, so the model sees exactly the same kind of input
-during training and during prediction.
-"""
-
 import os
 
 import cv2
@@ -87,7 +80,6 @@ def detect_human_face(image):
     if faces is None or len(faces) == 0:
         return 0, None, "none"
 
-    # Prefer the largest high-confidence face in group photographs.
     selected_face = max(
         faces,
         key=lambda face: float(face[2] * face[3] * face[14]),

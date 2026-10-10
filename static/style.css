@@ -485,7 +485,6 @@ input {
 }
 
 
-/* Security message */
 .security-message {
     display: flex;
     margin-top: 20px;
@@ -705,7 +704,6 @@ input {
 }
 
 
-/* Preview */
 .preview-section {
     margin-top: 18px;
     padding: 14px;
