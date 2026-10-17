@@ -25,7 +25,7 @@ frontend is served from an address other than GitHub Pages or localhost, set
 ## Features
 
 - Image upload (JPG, JPEG, PNG, WEBP, BMP, up to 10 MB), preview and face box overlay
-- Human-face validation (YuNet); only the largest face in a photo is analysed
+- Human-face validation (YuNet); one face selected using bounding-box area and detector confidence is analysed
 - Four-band verdict (likely real / uncertain / likely deepfake / deepfake) from the deepfake score
 - Downloadable report with SHA-256 checksum
 - Upload history (stored only in your browser) and CSV export
@@ -50,7 +50,7 @@ pip install -r requirements.txt
 python backend.py                # starts http://127.0.0.1:5000
 ```
 
-Then open `index.html` through a local server or the GitHub Pages site.
+In a second terminal, run `python -m http.server 5500` in the project folder and open <http://localhost:5500>. GitHub Pages uses the hosted backend, not your local server.
 
 The server **refuses to start** if the model, the face detector file or its threshold
 file cannot be loaded, so a problem shows up immediately.
@@ -63,7 +63,7 @@ Files required in `model/`:
 | `decision_threshold_detect_now_efficientnetb0_faceswap_crops_v2.json` | its decision threshold (0.40) |
 | `face_detection_yunet_2023mar.onnx` | YuNet face detector (OpenCV Zoo) |
 
-The original model (`detect_now_efficientnetb0_faceswap_crops.keras`, threshold file
+The earlier face-crop model (`detect_now_efficientnetb0_faceswap_crops.keras`, threshold file
 `decision_threshold_faceswap_crops.json`) can still be used. Set both before starting the server
 (file names inside `model/`):
 
@@ -87,7 +87,7 @@ How the v2 model was made (scripts are in `tools/`; the two Colab ones were run 
    inswapper pairs using the same steps as the backend (YuNet, 35% margin, pad, resize). Pairs that
    touch the team test set are dropped.
 3. `tools/train_colab.py` - fine-tunes the original model with augmentation (JPEG quality, flips,
-   brightness, contrast), reports before/after AUC per source, and picks a threshold on validation.
+   brightness, contrast), reports before/after AUC per source, and initially picks a threshold on validation. Later notebook cells inspect test results before saving the manual threshold; see the reproducibility notes below.
    Note: a model saved by a newer Keras may need its config cleaned of unknown settings before an
    older Keras (such as Colab's) can load it; the weights are unchanged.
 4. In the project folder (they import `preprocessing.py`): `evaluate_threshold.py` scores folders of
@@ -149,14 +149,20 @@ images called real; "swaps caught" is the share of face swaps called fake.
 - Neither model detects expression edits made by AI tools (both are near the false-alarm rate).
 - The inswapper test images come from the same swap tool used to train v2, so they do **not**
   show how well v2 handles swap tools it has never seen. That has not been measured.
-- Thresholds were chosen by hand from validation results. Test sets are small (50 to 322 images
-  per class), so small differences are within noise.
+- The automatic threshold was selected on validation, but the later notebook sweep inspected test results before saving 0.40. Final-threshold evaluation is exploratory; a new untouched test is needed.
 - The Kaggle splits do not share target videos, but some face-donor IDs in the test set also appear
   in train, so the Kaggle figures may be somewhat optimistic. Pairs touching the team test set were
   removed from training.
 
-**Data and licences:** _(fill in: Kaggle dataset name, link and licence; the Real faces library
-used for the inswapper pairs; how the swaps were generated)_
+**Data sources and licences:**
+
+| Material | Source status | Licence status |
+|---|---|---|
+| Kaggle face-swap images used for v2 | Unconfirmed | Unconfirmed |
+| Original real-face image library | Unconfirmed | Unconfirmed |
+| Team-generated Inswapper pairs | Generated using InsightFace inswapper_128; original-image source unconfirmed | Unconfirmed |
+
+No training images are included in this repository update.
 
 ## Known limitations
 
@@ -164,5 +170,9 @@ used for the inswapper pairs; how the swaps were generated)_
 - AI expression edits and other non-swap manipulations are not detected.
 - On the Kaggle test set, 15.6% of real photos got a likely deepfake or deepfake verdict (10.7% got deepfake).
 - Heavy compression, blur, low resolution, covered or very small faces reduce reliability.
-- Faces are judged one at a time (largest face only).
+- One selected face is classified per image.
 - The models have not been tested on images recompressed by social media.
+
+## Reproducibility and supplied experiment files
+
+See [EXPERIMENTS.md](EXPERIMENTS.md) for notebook roles, training environment, exact v2 counts and parameters, required inputs, execution steps and CSV verification.
